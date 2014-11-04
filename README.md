@@ -1,2 +1,2 @@
-iot-starter-android
-===================
+iot-starter-for-android
+=======================
