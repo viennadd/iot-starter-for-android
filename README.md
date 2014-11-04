@@ -26,9 +26,8 @@ For more information on IoT Foundation, refer to https://internetofthings.ibmclo
 
 ##How it works
 A device that is registered with IoT Foundation may publish event data or consume command data using the MQTT protocol.
-The IBM WebSphere iOS MQTT Client is used to publish and subscribe to IoT Foundation. This client can be downloaded as
-part of the Mobile Messaging & M2M Client Pack, available at:
-(https://www.ibm.com/developerworks/community/blogs/c565c720-fe84-4f63-873f-607d87787327/entry/download?lang=en).
+The Eclipse Paho MQTT Android Service is used to publish and subscribe to IoT Foundation. This can be downloaded from
+(http://www.eclipse.org/paho/clients/android/).
 
 MQTT is a lightweight messaging protocol that supports publish/subscribe messaging. With MQTT, an application publishes
 messages to a topic. These messages may then be received by another application that is subscribed to that topic.
