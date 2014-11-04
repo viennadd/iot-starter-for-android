@@ -27,7 +27,7 @@ For more information on IoT Foundation, refer to https://internetofthings.ibmclo
 ##How it works
 A device that is registered with IoT Foundation may publish event data or consume command data using the MQTT protocol.
 The Eclipse Paho MQTT Android Service is used to publish and subscribe to IoT Foundation. This can be downloaded from
-(http://www.eclipse.org/paho/clients/android/).
+[Eclipse Paho MQTT Android Service](http://www.eclipse.org/paho/clients/android/).
 
 MQTT is a lightweight messaging protocol that supports publish/subscribe messaging. With MQTT, an application publishes
 messages to a topic. These messages may then be received by another application that is subscribed to that topic.
@@ -37,8 +37,8 @@ The topics used by this application can be seen in the table below:
 ##Topics
 |Topic|Sample Topic|Sample Message|
 |:---------- |:---------- |:------------|
-|iot-2/evt/<event>/fmt/json|iot-2/evt/touchmove/fmt/json|{"d":{"deviceId":"ABABABABABAB","screenX":0,"screenY":0,"deltaX":0,"deltaY":0}}|
-|iot-2/cmd/<command>/fmt/json|iot-2/cmd/light/fmt/json|{"d":{"deviceId":"ABABABABABAB","light":"toggle"}}|
+|iot-2/evt/your_event_name/fmt/json|iot-2/evt/touchmove/fmt/json|{"d":{"deviceId":"ABABABABABAB","screenX":0,"screenY":0,"deltaX":0,"deltaY":0}}|
+|iot-2/cmd/your_command_name/fmt/json|iot-2/cmd/light/fmt/json|{"d":{"deviceId":"ABABABABABAB","light":"toggle"}}|
 
 For more information on the MQTT protocol, see http://mqtt.org/
 
@@ -50,10 +50,10 @@ where you can register devices.
 On launching the application for the first time, you will be prompted to enter your credentials to connect your device
 to the IoT Foundation. The required information to connect your device includes:
 
--Your Organization ID, e.g. ab1cd
--Your Device ID, e.g. the MAC Address of your device. This should be the same ID as the device that you registered in
+- Your Organization ID, e.g. ab1cd
+- Your Device ID, e.g. the MAC Address of your device. This should be the same ID as the device that you registered in
 your IoT Foundation organization.
--Your device authorization token. This is returned when registering your device with the IoT Foundation.
+- Your device authorization token. This is returned when registering your device with the IoT Foundation.
 
 Once you have entered the necessary credentials, you may activate your device as a sensor.
 Pressing the 'Activate Sensor' button will connect the device to the IoT Foundation and allow it to begin publishing and receiving data.
