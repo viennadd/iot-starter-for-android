@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2014 IBM Corp.
+*
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* and Eclipse Distribution License v1.0 which accompany this distribution.
+*
+* The Eclipse Public License is available at
+*   http://www.eclipse.org/legal/epl-v10.html
+* and the Eclipse Distribution License is available at
+*   http://www.eclipse.org/org/documents/edl-v10.php.
+*
+* Contributors:
+*    Mike Robertson - initial contribution
+*******************************************************************************/
+-->
+<resources>
+    <string name="app_name">IoT Starter</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Error messages -->
+    <string name="broker_unavailable_check_connectivity">Server is unavailable. Please check your connectivity and try again</string>
+    <string name="exit">Exit</string>
+    <string name="retry">Retry</string>
+
+    <!-- Menu Actions -->
+    <string name="login_label">Login</string>
+    <string name="iot_label">IoT</string>
+    <string name="log_label">Log</string>
+
+    <!-- Begin Login Activity -->
+
+    <string name="activate_button">Activate Sensor</string>
+    <string name="deactivate_button">Deactivate Sensor</string>
+    <string name="credential_button">Enter Credentials</string>
+
+    <string name="currentOrganization">Current Organization: -</string>
+    <string name="deviceID">DeviceID: -</string>
+    <string name="isConnected">Connected to IoT: No</string>
+
+    <string name="organizationHint">Organization ID</string>
+    <string name="deviceIDHint">Device ID</string>
+    <string name="authTokenHint">Auth Token</string>
+
+    <!-- End Login Activity -->
+
+    <!-- Begin IoT Activity -->
+    <string name="accelInfo">Accelerometer Data</string>
+    <string name="accelX">x: 0.0</string>
+    <string name="accelY">y: 0.0</string>
+    <string name="accelZ">z: 0.0</string>
+    <string name="messagesPublished">Messages Published: 0</string>
+    <string name="messagesReceived">Messages Received: 0</string>
+    <string name="deviceIDSettingIoT">Device ID: </string>
+    <string name="deviceIDValueIoT">Device ID</string>
+
+
+    <!-- End IoT Activity -->
+
+    <!-- Begin Input Pad Activity -->
+    <string name="sendText">Send Text</string>
+
+    <!-- End Input Pad Activity -->
+
+    <!-- Begin Settings Activity -->
+    <string name="organizationSetting">Organization: </string>
+    <string name="deviceIDSetting">Device ID: </string>
+    <string name="authTokenSetting">Auth Token: </string>
+
+    <string name="organizationValue">Organization</string>
+    <string name="deviceIDValue">Device ID</string>
+    <string name="authTokenValue">Auth Token</string>
+
+    <string name="save_button">Save Settings</string>
+
+    <!-- End Settings Activity -->
+</resources>

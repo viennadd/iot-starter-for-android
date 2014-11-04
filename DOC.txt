@@ -1,0 +1,54 @@
+Main Application Handle:
+- IoTStarterApplication
+  These 3 properties are stored in persistent application data:
+  - Auth Token - Set by user on login layout
+  - Device ID - Set by user on login layout
+  - Organization ID - Set by user on login layout
+
+  These properties depend on current application state
+  - Connected - Set when MQTT client connected / disconnected
+
+  - Publish Count - Updated on message publish (accel, text, touchmove)
+  - Receive Count - Updated on message arrived (MqttHandler messageArrived callback)
+
+  - Color - Default: Gray, Updated on color message received
+
+Activities:
+- Login - Initial activity of the application
+- IoT - Sends text, accel or touchmove event messages, displays color command messages on background
+- Log - Displays received text command messages
+
+Views:
+- DrawingView - Part of IoT Activity, background color based on IoTStarterApplication Color property, allows for
+                sending of touchmove messages.
+
+Utils:
+- MqttHandler - Perform all MQTT related actions. Send connection loss intents to LoginActivity and message arrived
+                intents to IoTActivity
+- ActionListener - Process results of MQTT API calls, send connection intents to LoginActivity and message publish
+                intents to IoTActivity
+- MessageConductor - Process received messages, send color intents to IoTActivity, send text intents to LogActivity
+- TopicFactory - Generate command and event topic strings
+- MessageFactory - Unused currently
+- DeviceSensor - Handle device sensors for accelerometer, magnetometer, orientation
+- PayloadAdapter - Format JSON text messages for LogActivity
+
+Intents:
+- INTENT_LOGIN - LoginActivity
+- INTENT_IOT   - IoTActivity
+- INTENT_LOG   - LoginActivity
+
+  The following are sent to LoginActivity by MqttHandler
+  - INTENT_DATA_CONNECT - mqtt client connected
+  - INTENT_DATA_DISCONNECT - mqtt client disconnected
+
+  The following are sent to IoTActivity by MqttHandler
+  - INTENT_DATA_PUBLISHED - message published
+  - INTENT_DATA_RECEIVED - message received
+
+  The following are sent to IoTActivity by MessageConductor
+  - COLOR_EVENT - color message was received
+
+  The following are sent to LogActivity by MessageConductor
+  - TEXT_EVENT - text message was received
+
