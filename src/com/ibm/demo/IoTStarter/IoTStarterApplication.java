@@ -13,7 +13,7 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter;
+package com.ibm.demo.IoTStarter;
 
 import android.app.Application;
 import android.content.Context;
@@ -25,7 +25,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import com.ibm.robertmp.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;

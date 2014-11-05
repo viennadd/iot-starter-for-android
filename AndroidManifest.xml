@@ -17,7 +17,7 @@
  *******************************************************************************/
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ibm.robertmp.IoTStarter"
+          package="com.ibm.demo.IoTStarter"
           android:versionCode="1"
           android:versionName="1.0">
     <uses-sdk android:minSdkVersion="16"/>
@@ -62,7 +62,7 @@
         <receiver
             android:name=".receivers.RouterReceiver" >
             <intent-filter>
-                <action android:name="com.ibm.robertmp.ROUTER" >
+                <action android:name="com.ibm.demo.ROUTER" >
                 </action>
             </intent-filter>
         </receiver>

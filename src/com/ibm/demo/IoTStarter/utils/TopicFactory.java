@@ -13,10 +13,10 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.utils;
+package com.ibm.demo.IoTStarter.utils;
 
 import android.content.Context;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
 
 /**
  * Build topic strings used by the application.

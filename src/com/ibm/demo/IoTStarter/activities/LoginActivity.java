@@ -13,7 +13,7 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,11 +26,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
-import com.ibm.robertmp.IoTStarter.R;
-import com.ibm.robertmp.IoTStarter.utils.Constants;
-import com.ibm.robertmp.IoTStarter.utils.DeviceSensor;
-import com.ibm.robertmp.IoTStarter.utils.MqttHandler;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.DeviceSensor;
+import com.ibm.demo.IoTStarter.utils.MqttHandler;
 
 /**
  * The login activity of the IoTStarter application. Provides functionality for

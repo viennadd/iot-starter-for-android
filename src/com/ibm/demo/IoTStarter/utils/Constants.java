@@ -13,14 +13,14 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.utils;
+package com.ibm.demo.IoTStarter.utils;
 
 /**
  * Created by mprobert on 9/29/2014.
  */
 public class Constants {
 
-    public final static String APP_ID = "com.ibm.robertmp.IoTStarter";
+    public final static String APP_ID = "com.ibm.demo.IoTStarter";
     public final static String SETTINGS = APP_ID+".Settings";
 
     public final static String SETTINGS_MQTT_SERVER = "messaging.internetofthings.ibmcloud.com";

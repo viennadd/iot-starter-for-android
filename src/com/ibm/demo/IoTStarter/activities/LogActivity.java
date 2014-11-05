@@ -13,7 +13,7 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.activities;
 
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
@@ -29,9 +29,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
-import com.ibm.robertmp.IoTStarter.R;
-import com.ibm.robertmp.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;

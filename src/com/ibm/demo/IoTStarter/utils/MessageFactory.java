@@ -13,11 +13,11 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.utils;
+package com.ibm.demo.IoTStarter.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
 
 /**
  * Build messages to be published by the application.

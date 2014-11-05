@@ -13,7 +13,7 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.receivers;
+package com.ibm.demo.IoTStarter.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

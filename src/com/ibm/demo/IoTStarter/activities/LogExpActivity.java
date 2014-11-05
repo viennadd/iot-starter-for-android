@@ -12,7 +12,7 @@
  *
  * Contributors: Allan Marube, Mike Robertson
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.activities;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -23,10 +23,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.ExpandableListView;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
-import com.ibm.robertmp.IoTStarter.R;
-import com.ibm.robertmp.IoTStarter.utils.Constants;
-import com.ibm.robertmp.IoTStarter.utils.PayloadAdapter;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.PayloadAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 

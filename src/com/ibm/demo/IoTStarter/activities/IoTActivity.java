@@ -13,7 +13,7 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,12 +28,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.ibm.robertmp.IoTStarter.DrawingView;
-import com.ibm.robertmp.IoTStarter.IoTStarterApplication;
-import com.ibm.robertmp.IoTStarter.R;
-import com.ibm.robertmp.IoTStarter.utils.Constants;
-import com.ibm.robertmp.IoTStarter.utils.MqttHandler;
-import com.ibm.robertmp.IoTStarter.utils.TopicFactory;
+import com.ibm.demo.IoTStarter.DrawingView;
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
+import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.MqttHandler;
+import com.ibm.demo.IoTStarter.utils.TopicFactory;
 
 /**
  * The IoT Activity is the main activity of the application that will be displayed while the device is connected

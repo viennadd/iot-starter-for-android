@@ -12,7 +12,7 @@
  *
  * Contributors: Allan Marube, Mike Robertson
  *******************************************************************************/
-package com.ibm.robertmp.IoTStarter.utils;
+package com.ibm.demo.IoTStarter.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import com.ibm.robertmp.IoTStarter.R;
+import com.ibm.demo.IoTStarter.R;
 
 import java.util.HashMap;
 import java.util.List;
