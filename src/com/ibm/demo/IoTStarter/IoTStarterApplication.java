@@ -26,6 +26,7 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.DeviceSensor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +50,13 @@ public class IoTStarterApplication extends Application {
     private int receiveCount = 0;
 
     private int color = Color.WHITE;
+    private DeviceSensor deviceSensor;
 
     private Camera camera;
 
     private boolean isCameraOn = false;
     private float[] accelData;
+    private boolean accelEnabled = true;
 
     private ArrayList<String> messageLog;
     //payload being received are stored here
@@ -75,6 +78,22 @@ public class IoTStarterApplication extends Application {
         Log.d(TAG, "auth token: " + this.authToken);
 
         messageLog = new ArrayList<String>();
+    }
+
+    public void toggleAccel() {
+        this.setAccelEnabled(!this.isAccelEnabled());
+        if (connected && accelEnabled) {
+            // Device Sensor was previously disabled, and the device is connected, so enable the sensor
+            if (deviceSensor == null) {
+                deviceSensor = DeviceSensor.getInstance(this);
+            }
+            deviceSensor.enableSensor();
+        } else if (connected && !accelEnabled) {
+            // Device Sensor was previously enabled, and the device is connected, so disable the sensor
+            if (deviceSensor != null) {
+                deviceSensor.disableSensor();
+            }
+        }
     }
 
     /**
@@ -203,4 +222,21 @@ public class IoTStarterApplication extends Application {
     public void setTopicsReceived(List<String> topicsReceived) {
         this.topicsReceived = topicsReceived;
     }
+
+    public boolean isAccelEnabled() {
+        return accelEnabled;
+    }
+
+    public void setAccelEnabled(boolean accelEnabled) {
+        this.accelEnabled = accelEnabled;
+    }
+
+    public DeviceSensor getDeviceSensor() {
+        return deviceSensor;
+    }
+
+    public void setDeviceSensor(DeviceSensor deviceSensor) {
+        this.deviceSensor = deviceSensor;
+    }
+
 }

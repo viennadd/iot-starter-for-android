@@ -292,6 +292,9 @@ public class IoTActivity extends Activity {
             case R.id.action_log:
                 openLog();
                 return true;
+            case R.id.action_accel:
+                app.toggleAccel();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -41,7 +41,6 @@ public class LoginActivity extends Activity {
     private Context context;
     private IoTStarterApplication app;
     private BroadcastReceiver loginBroadcastReceiver;
-    private DeviceSensor deviceSensor;
 
     /**************************************************************************
      * Activity functions for establishing the activity
@@ -158,6 +157,7 @@ public class LoginActivity extends Activity {
 
     /**
      * Check whether the required properties are set for the app to connect to IoT.
+     *
      * @return True if properties are set, false otherwise.
      */
     private boolean checkCanConnect() {
@@ -214,6 +214,7 @@ public class LoginActivity extends Activity {
 
     /**
      * Process the incoming intent broadcast.
+     *
      * @param intent The intent which was received by the activity.
      */
     private void processIntent(Intent intent) {
@@ -240,8 +241,10 @@ public class LoginActivity extends Activity {
         connectedString = connectedString.replace("No", "Yes");
         ((TextView) findViewById(R.id.isConnected)).setText(connectedString);
         activateButton.setText(getResources().getString(R.string.deactivate_button));
-        deviceSensor = DeviceSensor.getInstance(context);
-        deviceSensor.enableSensor();
+        if (app.isAccelEnabled()) {
+            app.setDeviceSensor(DeviceSensor.getInstance(context));
+            app.getDeviceSensor().enableSensor();
+        }
     }
 
     /**
@@ -254,8 +257,8 @@ public class LoginActivity extends Activity {
         activateButton.setEnabled(true);
         ((TextView) findViewById(R.id.isConnected)).setText(this.getString(R.string.isConnected));
         activateButton.setText(getResources().getString(R.string.activate_button));
-        if (deviceSensor != null) {
-            deviceSensor.disableSensor();
+        if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
+            app.getDeviceSensor().disableSensor();
         }
     }
 
@@ -283,6 +286,7 @@ public class LoginActivity extends Activity {
 
     /**
      * Infalte the options menu.
+     *
      * @param menu The menu to create.
      * @return
      */
@@ -295,6 +299,7 @@ public class LoginActivity extends Activity {
 
     /**
      * Process the selected menu item.
+     *
      * @param item The selected menu item.
      * @return true in all cases.
      */
@@ -310,6 +315,9 @@ public class LoginActivity extends Activity {
                 return true;
             case R.id.action_log:
                 openLog();
+                return true;
+            case R.id.action_accel:
+                app.toggleAccel();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

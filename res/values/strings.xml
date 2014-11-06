@@ -29,6 +29,7 @@
     <string name="login_label">Login</string>
     <string name="iot_label">IoT</string>
     <string name="log_label">Log</string>
+    <string name="accel_label">Toggle Accel</string>
 
     <!-- Begin Login Activity -->
 

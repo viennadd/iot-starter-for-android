@@ -182,6 +182,9 @@ public class LogExpActivity extends Activity {
                 return true;
             case R.id.action_log:
                 return true;
+            case R.id.action_accel:
+                app.toggleAccel();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
