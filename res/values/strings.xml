@@ -33,6 +33,8 @@
 
     <!-- Begin Login Activity -->
 
+    <string name="showToken_button">Show Auth Token</string>
+    <string name="hideToken_button">Hide Auth Token</string>
     <string name="activate_button">Activate Sensor</string>
     <string name="deactivate_button">Deactivate Sensor</string>
     <string name="credential_button">Enter Credentials</string>

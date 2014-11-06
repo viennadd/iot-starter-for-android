@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -142,7 +143,16 @@ public class LoginActivity extends Activity {
      */
     private void initializeButtons() {
         Log.d(TAG, ".initializeButtons() entered");
-        Button button = (Button) findViewById(R.id.activateButton);
+
+        Button button = (Button) findViewById(R.id.showTokenButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleShowToken();
+            }
+        });
+
+        button = (Button) findViewById(R.id.activateButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +215,23 @@ public class LoginActivity extends Activity {
             }
         } else if (buttonTitle.equals(getResources().getString(R.string.deactivate_button)) && app.isConnected() == true) {
             mqttHandle.disconnect();
+        }
+    }
+
+    /**
+     * Toggle auth token text field secure text entry
+     */
+    private void handleShowToken() {
+        Log.d(TAG, ".handleShowToken() entered");
+        Button showTokenButton = (Button) findViewById(R.id.showTokenButton);
+        String buttonTitle = showTokenButton.getText().toString();
+        EditText tokenText = (EditText) findViewById(R.id.authTokenValue);
+        if (buttonTitle.equals(getResources().getString(R.string.showToken_button))) {
+            showTokenButton.setText(getResources().getString(R.string.hideToken_button));
+            tokenText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        } else if (buttonTitle.equals(getResources().getString(R.string.hideToken_button))) {
+            showTokenButton.setText(getResources().getString(R.string.showToken_button));
+            tokenText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
     }
 

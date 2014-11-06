@@ -97,7 +97,7 @@
                 />
         <EditText
                 style="@style/MyActionBarTitleText"
-                android:layout_width="175dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
@@ -109,6 +109,11 @@
                 android:inputType="textPassword"
                 android:id="@+id/authTokenValue"
                 />
+    <Button
+            style="@style/SmallButton"
+            android:layout_gravity="center|bottom"
+            android:text="@string/showToken_button"
+            android:id="@+id/showTokenButton"/>
         <TextView
                 style="@style/MyActionBarTitleText"
                 android:layout_width="wrap_content"
