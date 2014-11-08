@@ -21,6 +21,7 @@ The application can receive data on the following IoT command topics:
 - Color (color command)
 - Light (light command)
 - Text (text command)
+- Alert (alert command)
 
 For more information on IoT Foundation, refer to https://internetofthings.ibmcloud.com/#/
 
@@ -37,8 +38,8 @@ The topics used by this application can be seen in the table below:
 ##Topics
 |Topic|Sample Topic|Sample Message|
 |:---------- |:---------- |:------------|
-|iot-2/evt/your_event_name/fmt/json|iot-2/evt/touchmove/fmt/json|{"d":{"deviceId":"ABABABABABAB","screenX":0,"screenY":0,"deltaX":0,"deltaY":0}}|
-|iot-2/cmd/your_command_name/fmt/json|iot-2/cmd/light/fmt/json|{"d":{"deviceId":"ABABABABABAB","light":"toggle"}}|
+|iot-2/evt/your_event_name/fmt/json|iot-2/evt/touchmove/fmt/json|{"d":{"screenX":0,"screenY":0,"deltaX":0,"deltaY":0}}|
+|iot-2/cmd/your_command_name/fmt/json|iot-2/cmd/light/fmt/json|{"d":{"light":"toggle"}}|
 
 For more information on the MQTT protocol, see http://mqtt.org/
 

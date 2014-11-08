@@ -23,6 +23,7 @@ import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.activities.IoTActivity;
 import com.ibm.demo.IoTStarter.activities.LogActivity;
 import com.ibm.demo.IoTStarter.activities.LogExpActivity;
+import com.ibm.demo.IoTStarter.activities.LoginActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,8 +64,8 @@ public class MessageConductor {
         Log.d(TAG, ".steerMessage() entered");
         JSONObject top = new JSONObject(payload);
         JSONObject d = top.getJSONObject("d");
-        String deviceID = d.getString("deviceId");
-        Log.v(TAG, "DeviceID from message: " + deviceID);
+        //String deviceID = d.getString("deviceId");
+        //Log.v(TAG, "DeviceID from message: " + deviceID);
 
         if (topic.contains(Constants.COLOR_EVENT)) {
             Log.d(TAG, "Color Event");
@@ -73,6 +74,12 @@ public class MessageConductor {
             int b = d.getInt("b");
             // alpha value received is 0.0 < a < 1.0 but Color.agrb expects 0 < a < 255
             int alpha = (int)(d.getDouble("alpha")*255.0);
+            if ((r > 255 || r < 0) ||
+                    (g > 255 || g < 0) ||
+                    (b > 255 || b < 0) ||
+                    (alpha > 255 || alpha < 0)) {
+                return;
+            }
 
             app.setColor(Color.argb(alpha, r, g, b));
 
@@ -101,6 +108,42 @@ public class MessageConductor {
                 Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
                 actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
                 context.sendBroadcast(actionIntent);
+            }
+        } else if (topic.contains(Constants.ALERT_EVENT)) {
+            // save payload in an arrayList
+            List messageRecvd = new ArrayList<String>();
+            messageRecvd.add(payload);
+
+            String uniqueTopic = topic+":"+ UUID.randomUUID().toString();
+
+            app.getPayload().put(uniqueTopic, messageRecvd);
+            app.getTopicsReceived().add(uniqueTopic);
+
+            String runningActivity = app.getCurrentRunningActivity();
+            if (runningActivity != null) {
+                if (runningActivity.equals(LogExpActivity.class.getName())) {
+                    Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
+                    actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
+                    context.sendBroadcast(actionIntent);
+                }
+
+                Intent alertIntent = null;
+                if (runningActivity.equals(LogExpActivity.class.getName())) {
+                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
+                } else if (runningActivity.equals(LoginActivity.class.getName())) {
+                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
+                } else if (runningActivity.equals(IoTActivity.class.getName())) {
+                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+                } else {
+                    return;
+                }
+
+                String messageText = d.getString("text");
+                if (messageText != null) {
+                    alertIntent.putExtra(Constants.INTENT_DATA, Constants.ALERT_EVENT);
+                    alertIntent.putExtra(Constants.INTENT_DATA_MESSAGE, d.getString("text"));
+                    context.sendBroadcast(alertIntent);
+                }
             }
         }
     }

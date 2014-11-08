@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.location.Location;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
@@ -33,33 +34,38 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Main class for the IoTStarter application. Stores values for
- * important device information.
+ * Main class for the IoT Starter application. Stores values for
+ * important device and application information.
  */
 public class IoTStarterApplication extends Application {
+    private final static String TAG = IoTStarterApplication.class.getName();
 
+    // Current activity of the application, updated whenever activity is changed
     private String currentRunningActivity;
+
+    // Values needed for connecting to IoT
     private String organization;
     private String deviceId;
     private String authToken;
-    private SharedPreferences settings;
-    private final static String TAG = IoTStarterApplication.class.getName();
 
+    private SharedPreferences settings;
+
+    // Application state variables
     private boolean connected = false;
     private int publishCount = 0;
     private int receiveCount = 0;
 
     private int color = Color.WHITE;
-    private DeviceSensor deviceSensor;
-
-    private Camera camera;
-
     private boolean isCameraOn = false;
     private float[] accelData;
     private boolean accelEnabled = true;
 
+    private DeviceSensor deviceSensor;
+    private Location currentLocation;
+    private Camera camera;
+
+    // Message log for log activity
     private ArrayList<String> messageLog;
-    //payload being received are stored here
     public HashMap<String, List<String>> payload = new HashMap<String, List<String>>();
     public List<String> topicsReceived = new ArrayList<String>(); //list of payload topics
 
@@ -75,11 +81,13 @@ public class IoTStarterApplication extends Application {
         this.setOrganization(settings.getString(Constants.ORGANIZATION, ""));
         this.setDeviceId(settings.getString(Constants.DEVICE_ID, ""));
         this.setAuthToken(settings.getString(Constants.AUTH_TOKEN, ""));
-        Log.d(TAG, "auth token: " + this.authToken);
 
         messageLog = new ArrayList<String>();
     }
 
+    /**
+     * Enables or disables the publishing of accelerometer data
+     */
     public void toggleAccel() {
         this.setAccelEnabled(!this.isAccelEnabled());
         if (connected && accelEnabled) {
@@ -120,13 +128,11 @@ public class IoTStarterApplication extends Application {
         }
     }
 
+    // Getters and Setters
+
     public String getCurrentRunningActivity() { return currentRunningActivity; }
 
     public void setCurrentRunningActivity(String currentRunningActivity) { this.currentRunningActivity = currentRunningActivity; }
-
-    public void setCurrentRunningActivityEmpty() {
-        this.currentRunningActivity = null;
-    }
 
     public String getOrganization() {
         return organization;
@@ -239,4 +245,11 @@ public class IoTStarterApplication extends Application {
         this.deviceSensor = deviceSensor;
     }
 
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
+    }
 }

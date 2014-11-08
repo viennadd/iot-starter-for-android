@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.MotionEvent;
 
 import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.MessageFactory;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
 import com.ibm.demo.IoTStarter.utils.TopicFactory;
 
@@ -183,22 +184,8 @@ public class DrawingView extends View {
 
         IoTStarterApplication app = (IoTStarterApplication) context.getApplicationContext();
 
-        String endString;
-        if (ended) {
-            endString = ", \"ended\":1 } }";
-        } else {
-            endString = " } }";
-        }
+        String messageData = MessageFactory.getTouchMessage(relativeX, relativeY, relativeDX, relativeDY, ended);
 
-        String messageData = "{ \"d\": { " +
-                "\"deviceId\":\"" + app.getDeviceId() + "\", " +
-                "\"deviceType\":\"Android\", " +
-                "\"type\":\"touchmove\", " +
-                "\"screenX\":" + relativeX + ", " +
-                "\"screenY\":" + relativeY + ", " +
-                "\"deltaX\":" + relativeDX + ", " +
-                "\"deltaY\":" + relativeDY +
-                endString;
         Log.v(TAG, "Publishing touch message: " + messageData);
         MqttHandler mqttHandler = MqttHandler.getInstance(context);
         mqttHandler.publish(TopicFactory.getEventTopic(Constants.TOUCH_EVENT), messageData, false, 0);

@@ -1,3 +1,20 @@
+Permissions:
+    - android.permission.INTERNET
+    - android.permission.ACCESS_NETWORK_STATE
+    - android.permission.ACCESS_WIFI_STATE
+        Device requires internet access to connect to the IoT Foundation
+    - android.permission.WRITE_EXTERNAL_STORAGE
+        Device stores credentials for connecting to IoT Foundation
+    - android.permission.WAKE_LOCK
+        Allow device to remain active while application is running
+    - android.permission.FLASHLIGHT
+        Allow device to enable flashlight when receiving light command messages
+    - android.permission.CAMERA
+        Used for enabling the flashlight
+    - android.permission.ACCESS_COARSE_LOCATION
+    - android.permission.ACCESS_FINE_LOCATION
+        Device requires location services to be able to publish latitude and longitude data
+
 Main Application Handle:
 - IoTStarterApplication
   These 3 properties are stored in persistent application data:
@@ -48,7 +65,14 @@ Intents:
 
   The following are sent to IoTActivity by MessageConductor
   - COLOR_EVENT - color message was received
+  - ALERT_EVENT - alert message was received
 
   The following are sent to LogActivity by MessageConductor
   - TEXT_EVENT - text message was received
+  - ALERT_EVENT - alert message was received
 
+  The following are sent to LoginActivity by MessageConductor
+  - ALERT_EVENT - alert message was received
+
+  The following are sent to IoTActivity by DeviceSensor
+  - ACCEL_EVENT - accel data updated

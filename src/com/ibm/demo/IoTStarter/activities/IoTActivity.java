@@ -32,6 +32,7 @@ import com.ibm.demo.IoTStarter.DrawingView;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
 import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.MessageFactory;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
 import com.ibm.demo.IoTStarter.utils.TopicFactory;
 
@@ -164,12 +165,7 @@ public class IoTActivity extends Activity {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
-                        String messageData = "{\"d\":{" +
-                                "\"deviceId\":\"" + app.getDeviceId() + "\", " +
-                                "\"deviceType\":\"Android\", " +
-                                "\"type\":\"text\", " +
-                                "\"text\":\"" + value.toString() + "\"" +
-                                " } }";
+                        String messageData = MessageFactory.getTextMessage(value.toString());
                         MqttHandler mqtt = MqttHandler.getInstance(context);
                         mqtt.publish(TopicFactory.getEventTopic(Constants.TEXT_EVENT), messageData, false, 0);
                     }
@@ -204,6 +200,15 @@ public class IoTActivity extends Activity {
             view.setBackgroundColor(app.getColor());
             drawingView.colorBackground(app.getColor());
             ((LinearLayout) findViewById(R.id.iotRoot)).setBackgroundColor(app.getColor());
+        } else if (data.equals(Constants.ALERT_EVENT)) {
+            String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Received Alert")
+                    .setMessage(message)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }).show();
         }
     }
 

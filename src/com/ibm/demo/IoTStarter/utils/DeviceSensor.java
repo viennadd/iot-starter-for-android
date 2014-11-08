@@ -150,21 +150,16 @@ public class DeviceSensor implements SensorEventListener {
          */
         @Override
         public void run() {
-            String messageData = "{ \"d\": {" +
-                    "\"deviceId\":\"" + app.getDeviceId() + "\", " +
-                    "\"deviceType\":\"Android\", " +
-                    "\"type\":\"accel\", " +
-                    "\"acceleration_x\":" + G[0] + ", " +
-                    "\"acceleration_y\":" + G[1] + ", " +
-                    "\"acceleration_z\":" + G[2] + ", " +
-                    "\"roll\":" + O[2] + ", " +
-                    "\"pitch\":" + O[1] + ", " +
-                    "\"yaw\":" + yaw + " " +
-                    "} }";
-            Log.v(TAG, "messageData: " + messageData);
+            Log.v(TAG, "SendTimerTask.run() entered");
+
+            String messageData = MessageFactory.getAccelMessage(G, O, yaw,
+                    app.getCurrentLocation().getLongitude(), app.getCurrentLocation().getLatitude());
+
             MqttHandler mqttHandler = MqttHandler.getInstance(context);
             mqttHandler.publish(TopicFactory.getEventTopic(Constants.ACCEL_EVENT), messageData, false, 0);
+
             app.setAccelData(G);
+
             String runningActivity = app.getCurrentRunningActivity();
             if (runningActivity != null && runningActivity.equals(IoTActivity.class.getName())) {
                 Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);

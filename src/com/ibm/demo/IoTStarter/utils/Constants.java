@@ -40,12 +40,14 @@ public class Constants {
 
     public final static String EVENT_TOPIC = "iot-2/evt/";
     public final static String COMMAND_TOPIC = "iot-2/cmd/";
+    public final static String FORMAT_TOPIC = "/fmt/json";
 
     public final static String ACCEL_EVENT = "accel";
     public final static String COLOR_EVENT = "color";
     public final static String TOUCH_EVENT = "touchmove";
     public final static String LIGHT_EVENT = "light";
     public final static String TEXT_EVENT = "text";
+    public final static String ALERT_EVENT = "alert";
 
     public final static String CONNECTIVITY_MESSAGE = "connectivityMessage";
     public final static String ACTION_INTENT_CONNECTIVITY_MESSAGE_RECEIVED = Constants.APP_ID + "." + "CONNECTIVITY_MESSAGE_RECEIVED";
@@ -60,6 +62,10 @@ public class Constants {
     public final static String INTENT_DATA_DISCONNECT = "disconnect";
     public final static String INTENT_DATA_PUBLISHED = "publish";
     public final static String INTENT_DATA_RECEIVED = "receive";
+    public final static String INTENT_DATA_MESSAGE = "message";
 
     public final static int ERROR_BROKER_UNAVAILABLE = 3;
+
+    public final static int LOCATION_MIN_TIME = 30000;
+    public final static float LOCATION_MIN_DISTANCE = 5;
 }

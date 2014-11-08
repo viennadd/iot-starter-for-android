@@ -15,10 +15,8 @@
 package com.ibm.demo.IoTStarter.activities;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.app.AlertDialog;
+import android.content.*;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -118,7 +116,20 @@ public class LogExpActivity extends Activity {
 
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");
-        payloadAdapter.notifyDataSetChanged();
+        String data = intent.getStringExtra(Constants.INTENT_DATA);
+        assert data != null;
+        if (data.equals(Constants.TEXT_EVENT)) {
+            payloadAdapter.notifyDataSetChanged();
+        } else if (data.equals(Constants.ALERT_EVENT)) {
+            String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Received Alert")
+                    .setMessage(message)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }).show();
+        }
     }
 
     @Override

@@ -47,7 +47,7 @@ public class TopicFactory {
      * @return The event topic for the specified event string.
      */
     public static String getEventTopic(String event) {
-        return Constants.EVENT_TOPIC + event + "/fmt/json";
+        return Constants.EVENT_TOPIC + event + Constants.FORMAT_TOPIC;
     }
 
     /**
@@ -55,6 +55,6 @@ public class TopicFactory {
      * @return The command topic for the specified command string.
      */
     public static String getCommandTopic(String command) {
-        return Constants.COMMAND_TOPIC + command + "/fmt/json";
+        return Constants.COMMAND_TOPIC + command + Constants.FORMAT_TOPIC;
     }
 }

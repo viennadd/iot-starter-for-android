@@ -31,6 +31,7 @@ import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.DeviceSensor;
+import com.ibm.demo.IoTStarter.utils.LocationUtils;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
 
 /**
@@ -253,6 +254,15 @@ public class LoginActivity extends Activity {
             openIoT();
         } else if (data.equals(Constants.INTENT_DATA_DISCONNECT)) {
             processDisconnectIntent();
+        } else if (data.equals(Constants.ALERT_EVENT)) {
+            String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Received Alert")
+                    .setMessage(message)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }).show();
         }
     }
 
@@ -269,6 +279,8 @@ public class LoginActivity extends Activity {
         ((TextView) findViewById(R.id.isConnected)).setText(connectedString);
         activateButton.setText(getResources().getString(R.string.deactivate_button));
         if (app.isAccelEnabled()) {
+            LocationUtils locUtils = LocationUtils.getInstance(context);
+            locUtils.connect();
             app.setDeviceSensor(DeviceSensor.getInstance(context));
             app.getDeviceSensor().enableSensor();
         }
@@ -285,7 +297,11 @@ public class LoginActivity extends Activity {
         ((TextView) findViewById(R.id.isConnected)).setText(this.getString(R.string.isConnected));
         activateButton.setText(getResources().getString(R.string.activate_button));
         if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
+            LocationUtils locUtils = LocationUtils.getInstance(context);
             app.getDeviceSensor().disableSensor();
+            if (locUtils != null) {
+                locUtils.disconnect();
+            }
         }
     }
 

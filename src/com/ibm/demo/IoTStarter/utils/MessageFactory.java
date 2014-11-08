@@ -42,4 +42,65 @@ public class MessageFactory {
         return instance;
     }
 
+    /**
+     * Construct a JSON formatted string accel event message
+     * @param G Float array with accelerometer x, y, z data
+     * @param O Float array with gyroscope roll, pitch data
+     * @param yaw Float representing gyroscope yaw value
+     * @param lon Double containing device longitude
+     * @param lat Double containing device latitude
+     * @return String containing JSON formatted message
+     */
+    public static String getAccelMessage(float G[], float O[], float yaw, double lon, double lat) {
+        String messageData = "{ \"d\": {" +
+                "\"acceleration_x\":" + G[0] + ", " +
+                "\"acceleration_y\":" + G[1] + ", " +
+                "\"acceleration_z\":" + G[2] + ", " +
+                "\"roll\":" + O[2] + ", " +
+                "\"pitch\":" + O[1] + ", " +
+                "\"yaw\":" + yaw + ", " +
+                "\"lon\":" + lon + ", " +
+                "\"lat\":" + lat + " " +
+                "} }";
+        return messageData;
+    }
+
+    /**
+     * Construct a JSON formatted string text event message
+     * @param text String of text message to send
+     * @return String containing JSON formatted message
+     */
+    public static String getTextMessage(String text) {
+        String messageData = "{\"d\":{" +
+                "\"text\":\"" + text.toString() + "\"" +
+                " } }";
+        return messageData;
+    }
+
+    /**
+     * Construct a JSON formatted string touchmove event message
+     * @param x Double of relative x position on screen
+     * @param y Double of relative y position on screen
+     * @param dX Double of relative x delta from previous position
+     * @param dY Double of relative y delta from previous position
+     * @param ended True if final message of the touch, false otherwise
+     * @return String containing JSON formatted message
+     */
+    public static String getTouchMessage(double x, double y, double dX, double dY, boolean ended) {
+        String endString;
+        if (ended) {
+            endString = ", \"ended\":1 } }";
+        } else {
+            endString = " } }";
+        }
+
+        String messageData = "{ \"d\": { " +
+                "\"screenX\":" + x + ", " +
+                "\"screenY\":" + y + ", " +
+                "\"deltaX\":" + dX + ", " +
+                "\"deltaY\":" + dY +
+                endString;
+        return messageData;
+    }
+
 }
