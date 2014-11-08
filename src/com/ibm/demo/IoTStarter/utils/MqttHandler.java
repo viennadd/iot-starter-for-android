@@ -96,7 +96,7 @@ public class MqttHandler implements MqttCallback {
             options.setCleanSession(true);
             options.setUserName(Constants.SETTINGS_USERNAME);
             options.setPassword(app.getAuthToken().toCharArray());
-            Log.d(TAG, "username: " + options.getUserName() + " password: " + app.getAuthToken());
+            
             try {
                 // connect
                 client.connect(options, context, listener);
