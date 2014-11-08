@@ -57,10 +57,18 @@ public class LocationUtils implements LocationListener {
      */
     public void connect() {
         Log.d(TAG, ".connect() entered");
+
+        // Check if location provider is enabled
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        if (locationManager.isProviderEnabled(locationProvider) == false) {
+            Log.d(TAG, "Location provider not enabled.");
+            app.setCurrentLocation(null);
+            return;
+        }
+
         // register for location updates
         String bestProvider = locationManager.getBestProvider(criteria, false);
         locationManager.requestLocationUpdates(bestProvider, Constants.LOCATION_MIN_TIME, Constants.LOCATION_MIN_DISTANCE, this);
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
         app.setCurrentLocation(locationManager.getLastKnownLocation(locationProvider));
     }
 
@@ -69,7 +77,11 @@ public class LocationUtils implements LocationListener {
      */
     public void disconnect() {
         Log.d(TAG, ".disconnect() entered");
-        locationManager.removeUpdates(this);
+
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        if (locationManager.isProviderEnabled(locationProvider)) {
+            locationManager.removeUpdates(this);
+        }
     }
 
     @Override

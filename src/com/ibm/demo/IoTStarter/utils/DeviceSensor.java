@@ -152,8 +152,13 @@ public class DeviceSensor implements SensorEventListener {
         public void run() {
             Log.v(TAG, "SendTimerTask.run() entered");
 
-            String messageData = MessageFactory.getAccelMessage(G, O, yaw,
-                    app.getCurrentLocation().getLongitude(), app.getCurrentLocation().getLatitude());
+            double lon = 0.0;
+            double lat = 0.0;
+            if (app.getCurrentLocation() != null) {
+                lon = app.getCurrentLocation().getLongitude();
+                lat = app.getCurrentLocation().getLatitude();
+            }
+            String messageData = MessageFactory.getAccelMessage(G, O, yaw, lon, lat);
 
             MqttHandler mqttHandler = MqttHandler.getInstance(context);
             mqttHandler.publish(TopicFactory.getEventTopic(Constants.ACCEL_EVENT), messageData, false, 0);
