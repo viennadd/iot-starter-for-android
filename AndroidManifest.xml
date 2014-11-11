@@ -39,8 +39,7 @@
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -49,14 +48,12 @@
 
         <activity
                 android:name=".activities.IoTActivity"
-                android:launchMode="singleTask"
-                android:screenOrientation="portrait">
+                android:launchMode="singleTask">
         </activity>
 
         <activity
                 android:name=".activities.LogExpActivity"
-                android:launchMode="singleTask"
-                android:screenOrientation="portrait">
+                android:launchMode="singleTask">
         </activity>
 
         <!-- Mqtt Service -->
