@@ -18,14 +18,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_login"
           android:title="@string/login_label"
+          android:icon="@drawable/glyphicons_020_home"
           android:orderInCategory="0"
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_iot"
           android:title="@string/iot_label"
+          android:icon="@drawable/glyphicons_040_stats"
           android:orderInCategory="1"
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/action_log"
           android:title="@string/log_label"
+          android:icon="@drawable/glyphicons_036_file"
           android:orderInCategory="2"
           android:showAsAction="ifRoom"/>
     <!--item android:id="@+id/action_profiles"

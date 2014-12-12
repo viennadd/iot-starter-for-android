@@ -86,10 +86,6 @@ public class IoTStarterApplication extends Application {
         this.setDeviceId(settings.getString(Constants.DEVICE_ID, ""));
         this.setAuthToken(settings.getString(Constants.AUTH_TOKEN, ""));
 
-        this.organization = "9cuh6o";
-        this.deviceId = "ABABABABABAB";
-        this.authToken = "Q*!tK)b0P7aDX4n0Za";
-
         messageLog = new ArrayList<String>();
     }
 
