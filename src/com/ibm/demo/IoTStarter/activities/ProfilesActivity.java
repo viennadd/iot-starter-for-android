@@ -25,27 +25,25 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
 import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.utils.IoTProfile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
- * The Log activity displays text command messages that have been received by the application.
- * NOTE: This class is an alternative to LogExpActivity and is not currently being used.
+ * The Profiles activity lists saved connection profiles to use to connect to IoT.
  */
-public class LogActivity extends ListActivity {
-    private final static String TAG = LogActivity.class.getName();
+public class ProfilesActivity extends ListActivity {
+    private final static String TAG = ProfilesActivity.class.getName();
     private Context context;
     private IoTStarterApplication app;
-    private BroadcastReceiver logBroadcastReceiver;
+    private BroadcastReceiver profilesBroadcastReceiver;
 
     ListView listView;
 
@@ -62,7 +60,7 @@ public class LogActivity extends ListActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.log);
+        setContentView(R.layout.profiles);
     }
 
     /**
@@ -80,12 +78,19 @@ public class LogActivity extends ListActivity {
         app = (IoTStarterApplication) getApplication();
         app.setCurrentRunningActivity(TAG);
 
-        ArrayAdapter<String> mLogAdapter = new ArrayAdapter<String>(this.context, R.layout.list_item, app.getMessageLog());
-        listView.setAdapter(mLogAdapter);
+        ArrayList<IoTProfile> profiles = (ArrayList) app.getProfiles();
+        ArrayList<String> profileNames = new ArrayList<String>();
+        int index;
+        for (index = 0; index < profiles.size(); index++) {
+            profileNames.add(profiles.get(index).getProfileName());
+        }
 
-        if (logBroadcastReceiver == null) {
+        ArrayAdapter<String> mProfilesAdapter = new ArrayAdapter<String>(this.context, R.layout.list_item, profileNames);
+        listView.setAdapter(mProfilesAdapter);
+
+        if (profilesBroadcastReceiver == null) {
             Log.d(TAG, ".onResume() - Registering LogBroadcastReceiver");
-            logBroadcastReceiver = new BroadcastReceiver() {
+            profilesBroadcastReceiver = new BroadcastReceiver() {
 
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -95,11 +100,11 @@ public class LogActivity extends ListActivity {
             };
         }
 
-        getApplicationContext().registerReceiver(logBroadcastReceiver,
+        getApplicationContext().registerReceiver(profilesBroadcastReceiver,
                 new IntentFilter(Constants.APP_ID + Constants.INTENT_LOG));
 
         // initialise
-        initializeLogActivity();
+        initializeProfilesActivity();
     }
 
     /**
@@ -109,15 +114,70 @@ public class LogActivity extends ListActivity {
     protected void onDestroy() {
         Log.d(TAG, ".onDestroy() entered");
 
-        getApplicationContext().unregisterReceiver(logBroadcastReceiver);
+        getApplicationContext().unregisterReceiver(profilesBroadcastReceiver);
         super.onDestroy();
     }
 
     /**
      * Initializing onscreen elements and shared properties
      */
-    private void initializeLogActivity() {
-        Log.d(TAG, ".initializeLogActivity() entered");
+    private void initializeProfilesActivity() {
+        Log.d(TAG, ".initializeProfilesActivity() entered");
+
+        Button button = (Button) findViewById(R.id.saveButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSave();
+            }
+        });
+
+        button = (Button) findViewById(R.id.backButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleBack();
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                String profileName = (String) listView.getAdapter().getItem(position);
+                handleSelection(profileName);
+            }
+        });
+    }
+
+    private void handleSelection(String profileName) {
+        Log.d(TAG, ".handleSelection() entered");
+
+        ArrayList<IoTProfile> profiles = (ArrayList<IoTProfile>) app.getProfiles();
+        for (IoTProfile profile : profiles) {
+            if (profile.getProfileName().equals(profileName)) {
+                app.setOrganization(profile.getOrganization());
+                app.setDeviceId(profile.getDeviceID());
+                app.setAuthToken(profile.getAuthorizationToken());
+                break;
+            }
+        }
+        finish();
+    }
+
+    private void handleSave() {
+        Log.d(TAG, ".handleSave() entered");
+        IoTProfile profile = new IoTProfile("default", app.getOrganization(), app.getDeviceId(), app.getAuthToken());
+        app.getProfiles().add(profile);
+        ArrayAdapter<String> adapter = (ArrayAdapter) listView.getAdapter();
+        synchronized (listView.getAdapter()) {
+            adapter.notify();
+        }
+    }
+
+    private void handleBack() {
+        Log.d(TAG, ".handleBack() entered");
+        finish();
     }
 
     private void processIntent(Intent intent) {
@@ -152,6 +212,15 @@ public class LogActivity extends ListActivity {
     }
 
     /**
+     * Switch to the Log activity.
+     */
+    private void openLog() {
+        Log.d(TAG, ".openLog() entered");
+        Intent logIntent = new Intent(getApplicationContext(), LogExpActivity.class);
+        startActivity(logIntent);
+    }
+
+    /**
      * Infalte the options iot_menu.
      * @param menu The iot_menu to create.
      * @return
@@ -159,7 +228,7 @@ public class LogActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, ".onCreateOptions() entered");
-        getMenuInflater().inflate(R.menu.log_menu, menu);
+        getMenuInflater().inflate(R.menu.profiles_menu, menu);
         return true;
     }
 
@@ -173,10 +242,10 @@ public class LogActivity extends ListActivity {
         Log.d(TAG, ".onOptionsItemSelected() entered");
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.clear:
+            /*case R.id.clear:
                 app.getMessageLog().clear();
                 listView.getAdapter().notify();
-                return true;
+                return true;*/
             case R.id.action_login:
                 openLogin();
                 return true;
@@ -184,10 +253,11 @@ public class LogActivity extends ListActivity {
                 openIoT();
                 return true;
             case R.id.action_log:
+                openLog();
                 return true;
-            case R.id.action_accel:
+            /*case R.id.action_accel:
                 app.toggleAccel();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

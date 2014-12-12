@@ -160,6 +160,14 @@ public class LoginActivity extends Activity {
                 handleActivate();
             }
         });
+
+        //button = (Button) findViewById(R.id.profilesButton);
+        /*button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleProfiles();
+            }
+        });*/
     }
 
     /**************************************************************************
@@ -306,7 +314,7 @@ public class LoginActivity extends Activity {
     }
 
     /**************************************************************************
-     * Functions to handle the menu bar
+     * Functions to handle the iot_menu bar
      **************************************************************************/
 
     /**
@@ -327,23 +335,29 @@ public class LoginActivity extends Activity {
         startActivity(logIntent);
     }
 
+    private void openProfiles() {
+        Log.d(TAG, ".handleProfiles() entered");
+        Intent profilesIntent = new Intent(getApplicationContext(), ProfilesActivity.class);
+        startActivity(profilesIntent);
+    }
+
     /**
-     * Infalte the options menu.
+     * Infalte the options iot_menu.
      *
-     * @param menu The menu to create.
+     * @param menu The iot_menu to create.
      * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, ".onCreateOptions() entered");
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.login_menu, menu);
         return true;
     }
 
     /**
-     * Process the selected menu item.
+     * Process the selected iot_menu item.
      *
-     * @param item The selected menu item.
+     * @param item The selected iot_menu item.
      * @return true in all cases.
      */
     @Override
@@ -362,6 +376,8 @@ public class LoginActivity extends Activity {
             case R.id.action_accel:
                 app.toggleAccel();
                 return true;
+            /*case R.id.action_profiles:
+                openProfiles();*/
             default:
                 return super.onOptionsItemSelected(item);
         }

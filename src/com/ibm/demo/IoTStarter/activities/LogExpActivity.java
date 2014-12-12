@@ -140,7 +140,7 @@ public class LogExpActivity extends Activity {
     }
 
     /**************************************************************************
-     * Functions to handle the menu bar
+     * Functions to handle the iot_menu bar
      **************************************************************************/
 
     /**
@@ -193,9 +193,9 @@ public class LogExpActivity extends Activity {
                 return true;
             case R.id.action_log:
                 return true;
-            case R.id.action_accel:
+            /*case R.id.action_accel:
                 app.toggleAccel();
-                return true;
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -28,6 +28,7 @@ import android.util.Log;
 
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.DeviceSensor;
+import com.ibm.demo.IoTStarter.utils.IoTProfile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,9 @@ public class IoTStarterApplication extends Application {
     public HashMap<String, List<String>> payload = new HashMap<String, List<String>>();
     public List<String> topicsReceived = new ArrayList<String>(); //list of payload topics
 
+    private IoTProfile currentProfile;
+    private List<IoTProfile> profiles = new ArrayList<IoTProfile>();
+
     /**
      * Called when the application is created. Initializes the application.
      */
@@ -81,6 +85,10 @@ public class IoTStarterApplication extends Application {
         this.setOrganization(settings.getString(Constants.ORGANIZATION, ""));
         this.setDeviceId(settings.getString(Constants.DEVICE_ID, ""));
         this.setAuthToken(settings.getString(Constants.AUTH_TOKEN, ""));
+
+        this.organization = "9cuh6o";
+        this.deviceId = "ABABABABABAB";
+        this.authToken = "Q*!tK)b0P7aDX4n0Za";
 
         messageLog = new ArrayList<String>();
     }
@@ -251,5 +259,13 @@ public class IoTStarterApplication extends Application {
 
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
+    }
+
+    public List<IoTProfile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(List<IoTProfile> profiles) {
+        this.profiles = profiles;
     }
 }

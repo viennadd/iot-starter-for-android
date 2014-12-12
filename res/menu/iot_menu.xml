@@ -28,16 +28,12 @@
           android:title="@string/log_label"
           android:orderInCategory="2"
           android:showAsAction="ifRoom"/>
-    <item android:id="@+id/clear"
-          android:title="Clear Log"
+    <item android:id="@+id/action_accel"
+          android:title="@string/accel_label"
           android:orderInCategory="3"
           android:showAsAction="never"/>
-    <!--item android:id="@+id/action_accel"
-          android:title="@string/accel_label"
-          android:orderInCategory="4"
-          android:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_profiles"
+    <!--item android:id="@+id/action_profiles"
           android:title="@string/profiles_label"
-          android:orderInCategory="5"
+          android:orderInCategory="4"
           android:showAsAction="ifRoom"/-->
 </menu>

@@ -246,7 +246,7 @@ public class IoTActivity extends Activity {
     }
 
     /**************************************************************************
-     * Functions to handle the menu bar
+     * Functions to handle the iot_menu bar
      **************************************************************************/
 
     /**
@@ -268,20 +268,20 @@ public class IoTActivity extends Activity {
     }
 
     /**
-     * Infalte the options menu.
-     * @param menu The menu to create.
+     * Infalte the options iot_menu.
+     * @param menu The iot_menu to create.
      * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, ".onCreateOptions() entered");
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.iot_menu, menu);
         return true;
     }
 
     /**
-     * Process the selected menu item.
-     * @param item The selected menu item.
+     * Process the selected iot_menu item.
+     * @param item The selected iot_menu item.
      * @return true in all cases.
      */
     @Override

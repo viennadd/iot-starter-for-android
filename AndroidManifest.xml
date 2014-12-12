@@ -47,13 +47,18 @@
         </activity>
 
         <activity
-                android:name=".activities.IoTActivity"
-                android:launchMode="singleTask">
+            android:name=".activities.IoTActivity"
+            android:launchMode="singleTask">
         </activity>
 
         <activity
-                android:name=".activities.LogExpActivity"
-                android:launchMode="singleTask">
+            android:name=".activities.LogExpActivity"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".activities.ProfilesActivity"
+            android:launchMode="singleTask">
         </activity>
 
         <!-- Mqtt Service -->

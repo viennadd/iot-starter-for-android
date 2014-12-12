@@ -30,9 +30,11 @@
     <string name="iot_label">IoT</string>
     <string name="log_label">Log</string>
     <string name="accel_label">Toggle Accel</string>
+    <string name="profiles_label">Profiles</string>
 
     <!-- Begin Login Activity -->
 
+    <string name="profiles_button">Profiles</string>
     <string name="showToken_button">Show Auth Token</string>
     <string name="hideToken_button">Hide Auth Token</string>
     <string name="activate_button">Activate Sensor</string>
@@ -77,6 +79,7 @@
     <string name="authTokenValue">Auth Token</string>
 
     <string name="save_button">Save Settings</string>
+    <string name="back_button">Back</string>
 
     <!-- End Settings Activity -->
 </resources>
