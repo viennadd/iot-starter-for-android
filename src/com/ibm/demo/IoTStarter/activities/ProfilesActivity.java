@@ -15,20 +15,16 @@
  *******************************************************************************/
 package com.ibm.demo.IoTStarter.activities;
 
-import android.app.ListActivity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.*;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
+import android.widget.*;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
 import com.ibm.demo.IoTStarter.utils.Constants;
@@ -39,13 +35,14 @@ import java.util.ArrayList;
 /**
  * The Profiles activity lists saved connection profiles to use to connect to IoT.
  */
-public class ProfilesActivity extends ListActivity {
+public class ProfilesActivity extends Activity {
     private final static String TAG = ProfilesActivity.class.getName();
-    private Context context;
-    private IoTStarterApplication app;
-    private BroadcastReceiver profilesBroadcastReceiver;
+    protected Context context;
+    protected IoTStarterApplication app;
+    protected BroadcastReceiver broadcastReceiver;
 
-    ListView listView;
+    protected ListView listView;
+    protected ArrayAdapter<String> listAdapter;
 
     /**************************************************************************
      * Activity functions for establishing the activity
@@ -55,7 +52,7 @@ public class ProfilesActivity extends ListActivity {
      * Called when the activity is first created.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, ".onCreate() entered");
 
         super.onCreate(savedInstanceState);
@@ -67,7 +64,7 @@ public class ProfilesActivity extends ListActivity {
      * Called when the activity is resumed.
      */
     @Override
-    protected void onResume() {
+    public void onResume() {
         Log.d(TAG, ".onResume() entered");
 
         super.onResume();
@@ -78,19 +75,12 @@ public class ProfilesActivity extends ListActivity {
         app = (IoTStarterApplication) getApplication();
         app.setCurrentRunningActivity(TAG);
 
-        ArrayList<IoTProfile> profiles = (ArrayList) app.getProfiles();
-        ArrayList<String> profileNames = new ArrayList<String>();
-        int index;
-        for (index = 0; index < profiles.size(); index++) {
-            profileNames.add(profiles.get(index).getProfileName());
-        }
+        listAdapter = new ArrayAdapter<String>(this.context, R.layout.list_item, app.getProfileNames());
+        listView.setAdapter(listAdapter);
 
-        ArrayAdapter<String> mProfilesAdapter = new ArrayAdapter<String>(this.context, R.layout.list_item, profileNames);
-        listView.setAdapter(mProfilesAdapter);
-
-        if (profilesBroadcastReceiver == null) {
+        if (broadcastReceiver == null) {
             Log.d(TAG, ".onResume() - Registering LogBroadcastReceiver");
-            profilesBroadcastReceiver = new BroadcastReceiver() {
+            broadcastReceiver = new BroadcastReceiver() {
 
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -100,8 +90,8 @@ public class ProfilesActivity extends ListActivity {
             };
         }
 
-        getApplicationContext().registerReceiver(profilesBroadcastReceiver,
-                new IntentFilter(Constants.APP_ID + Constants.INTENT_LOG));
+        getApplicationContext().registerReceiver(broadcastReceiver,
+                new IntentFilter(Constants.APP_ID + Constants.INTENT_PROFILES));
 
         // initialise
         initializeProfilesActivity();
@@ -111,10 +101,10 @@ public class ProfilesActivity extends ListActivity {
      * Called when the activity is destroyed.
      */
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         Log.d(TAG, ".onDestroy() entered");
 
-        getApplicationContext().unregisterReceiver(profilesBroadcastReceiver);
+        getApplicationContext().unregisterReceiver(broadcastReceiver);
         super.onDestroy();
     }
 
@@ -132,14 +122,6 @@ public class ProfilesActivity extends ListActivity {
             }
         });
 
-        button = (Button) findViewById(R.id.backButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleBack();
-            }
-        });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -150,6 +132,11 @@ public class ProfilesActivity extends ListActivity {
         });
     }
 
+    /**
+     * Callback for when a profile is selected from the list. Set the application properties to
+     * the content of the profile and close the profiles activity.
+     * @param profileName The name of the selected profile.
+     */
     private void handleSelection(String profileName) {
         Log.d(TAG, ".handleSelection() entered");
 
@@ -165,66 +152,70 @@ public class ProfilesActivity extends ListActivity {
         finish();
     }
 
+    /**
+     * Callback for when the save button is pressed. Prompt the user for a profile name.
+     * If the chosen name is already in use, prompt the user to overwrite the existing profile.
+     */
     private void handleSave() {
         Log.d(TAG, ".handleSave() entered");
-        IoTProfile profile = new IoTProfile("default", app.getOrganization(), app.getDeviceId(), app.getAuthToken());
-        app.getProfiles().add(profile);
-        ArrayAdapter<String> adapter = (ArrayAdapter) listView.getAdapter();
-        synchronized (listView.getAdapter()) {
-            adapter.notify();
-        }
+
+        final EditText input = new EditText(context);
+        new AlertDialog.Builder(this)
+                .setTitle("Save Profile")
+                .setMessage("Enter a name for the profile.")
+                .setView(input)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Editable value = input.getText();
+                        IoTProfile profile = new IoTProfile(value.toString(), app.getOrganization(), app.getDeviceId(), app.getAuthToken());
+
+                        // Check if profile name already exists.
+                        if (app.getProfileNames().contains(profile.getProfileName())) {
+                            final IoTProfile newProfile = profile;
+                            new AlertDialog.Builder(ProfilesActivity.this)
+                                    .setTitle("Profile Name Exists")
+                                    .setMessage("The profile name you have entered already exists. Overwrite?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            app.overwriteProfile(newProfile);
+                                            listAdapter.notifyDataSetInvalidated();
+                                        }
+                                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    // Do nothing
+                                }
+                            }).show();
+                        } else {
+                            app.saveProfile(profile);
+                            listAdapter.notifyDataSetInvalidated();
+                        }
+                    }
+                }).show();
     }
 
-    private void handleBack() {
-        Log.d(TAG, ".handleBack() entered");
-        finish();
-    }
-
+    /**
+     * Process intents received by the Broadcast Receiver.
+     * @param intent The intent that was received.
+     */
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");
+
         String data = intent.getStringExtra(Constants.INTENT_DATA);
         assert data != null;
-        if (data.equals(Constants.TEXT_EVENT)) {
-            listView.getAdapter().notify();
+        listAdapter.notifyDataSetInvalidated();
+
+        if (data.equals(Constants.ALERT_EVENT)) {
+            String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Received Alert")
+                    .setMessage(message)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }).show();
         }
     }
 
-    /**************************************************************************
-     * Functions to handle the iot_menu bar
-     **************************************************************************/
-
-    /**
-     * Switch to the Login activity.
-     */
-    private void openLogin() {
-        Log.d(TAG, ".openLogin() entered");
-        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(loginIntent);
-    }
-
-    /**
-     * Switch to the IoT activity.
-     */
-    private void openIoT() {
-        Log.d(TAG, ".openIoT() entered");
-        Intent iotIntent = new Intent(getApplicationContext(), IoTActivity.class);
-        startActivity(iotIntent);
-    }
-
-    /**
-     * Switch to the Log activity.
-     */
-    private void openLog() {
-        Log.d(TAG, ".openLog() entered");
-        Intent logIntent = new Intent(getApplicationContext(), LogExpActivity.class);
-        startActivity(logIntent);
-    }
-
-    /**
-     * Infalte the options iot_menu.
-     * @param menu The iot_menu to create.
-     * @return
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, ".onCreateOptions() entered");
@@ -234,30 +225,27 @@ public class ProfilesActivity extends ListActivity {
 
     /**
      * Process the selected iot_menu item.
+     *
      * @param item The selected iot_menu item.
      * @return true in all cases.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG, ".onOptionsItemSelected() entered");
+
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            /*case R.id.clear:
-                app.getMessageLog().clear();
-                listView.getAdapter().notify();
-                return true;*/
-            case R.id.action_login:
-                openLogin();
-                return true;
-            case R.id.action_iot:
-                openIoT();
-                return true;
-            case R.id.action_log:
-                openLog();
-                return true;
-            /*case R.id.action_accel:
+            case R.id.action_accel:
                 app.toggleAccel();
-                return true;*/
+                return true;
+            case R.id.action_clear_profiles:
+                app.clearProfiles();
+                listAdapter.notifyDataSetInvalidated();
+                return true;
+            case R.id.clear:
+                app.setUnreadCount(0);
+                app.getMessageLog().clear();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -26,15 +26,15 @@
     <string name="retry">Retry</string>
 
     <!-- Menu Actions -->
-    <string name="login_label">Login</string>
-    <string name="iot_label">IoT</string>
-    <string name="log_label">Log</string>
+    <string name="login_label">LOGIN</string>
+    <string name="iot_label">IOT</string>
+    <string name="log_label">LOG</string>
     <string name="accel_label">Toggle Accel</string>
     <string name="profiles_label">Profiles</string>
+    <string name="clear_profiles_label">Clear Profiles</string>
 
     <!-- Begin Login Activity -->
 
-    <string name="profiles_button">Profiles</string>
     <string name="showToken_button">Show Auth Token</string>
     <string name="hideToken_button">Hide Auth Token</string>
     <string name="activate_button">Activate Sensor</string>
@@ -60,7 +60,6 @@
     <string name="messagesReceived">Messages Received: 0</string>
     <string name="deviceIDSettingIoT">Device ID: </string>
     <string name="deviceIDValueIoT">Device ID</string>
-
 
     <!-- End IoT Activity -->
 

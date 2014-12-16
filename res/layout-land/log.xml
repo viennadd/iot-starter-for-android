@@ -19,10 +19,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <Button style="@style/BottomButton"
-            android:layout_gravity="center"
-            android:text="@string/save_button"
-            android:id="@+id/saveButton"/>
+
     <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

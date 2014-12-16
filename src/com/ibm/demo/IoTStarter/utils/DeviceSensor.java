@@ -23,8 +23,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
-import com.ibm.demo.IoTStarter.activities.IoTActivity;
-import com.ibm.demo.IoTStarter.activities.LoginActivity;
+import com.ibm.demo.IoTStarter.fragments.IoTFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -159,14 +158,20 @@ public class DeviceSensor implements SensorEventListener {
                 lat = app.getCurrentLocation().getLatitude();
             }
             String messageData = MessageFactory.getAccelMessage(G, O, yaw, lon, lat);
+            String topic;
+            if (app.getConnectionType() == Constants.ConnectionType.QUICKSTART) {
+                topic = TopicFactory.getEventTopic(Constants.STATUS_EVENT);
+            } else {
+                topic = TopicFactory.getEventTopic(Constants.ACCEL_EVENT);
+            }
 
             MqttHandler mqttHandler = MqttHandler.getInstance(context);
-            mqttHandler.publish(TopicFactory.getEventTopic(Constants.ACCEL_EVENT), messageData, false, 0);
+            mqttHandler.publish(topic, messageData, false, 0);
 
             app.setAccelData(G);
 
             String runningActivity = app.getCurrentRunningActivity();
-            if (runningActivity != null && runningActivity.equals(IoTActivity.class.getName())) {
+            if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
                 Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
                 actionIntent.putExtra(Constants.INTENT_DATA, Constants.ACCEL_EVENT);
                 context.sendBroadcast(actionIntent);

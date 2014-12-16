@@ -16,23 +16,19 @@
 package com.ibm.demo.IoTStarter;
 
 import android.app.Application;
-import android.content.Context;
+
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.location.Location;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.DeviceSensor;
 import com.ibm.demo.IoTStarter.utils.IoTProfile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Main class for the IoT Starter application. Stores values for
@@ -48,6 +44,7 @@ public class IoTStarterApplication extends Application {
     private String organization;
     private String deviceId;
     private String authToken;
+    private Constants.ConnectionType connectionType;
 
     private SharedPreferences settings;
 
@@ -55,6 +52,7 @@ public class IoTStarterApplication extends Application {
     private boolean connected = false;
     private int publishCount = 0;
     private int receiveCount = 0;
+    private int unreadCount = 0;
 
     private int color = Color.WHITE;
     private boolean isCameraOn = false;
@@ -66,12 +64,10 @@ public class IoTStarterApplication extends Application {
     private Camera camera;
 
     // Message log for log activity
-    private ArrayList<String> messageLog;
-    public HashMap<String, List<String>> payload = new HashMap<String, List<String>>();
-    public List<String> topicsReceived = new ArrayList<String>(); //list of payload topics
+    private ArrayList<String> messageLog = new ArrayList<String>();
 
-    private IoTProfile currentProfile;
     private List<IoTProfile> profiles = new ArrayList<IoTProfile>();
+    private ArrayList<String> profileNames = new ArrayList<String>();
 
     /**
      * Called when the application is created. Initializes the application.
@@ -82,11 +78,75 @@ public class IoTStarterApplication extends Application {
         super.onCreate();
 
         settings = getSharedPreferences(Constants.SETTINGS, 0);
-        this.setOrganization(settings.getString(Constants.ORGANIZATION, ""));
-        this.setDeviceId(settings.getString(Constants.DEVICE_ID, ""));
-        this.setAuthToken(settings.getString(Constants.AUTH_TOKEN, ""));
 
-        messageLog = new ArrayList<String>();
+        loadProfiles();
+    }
+
+    /**
+     * Called when old application stored settings values are found.
+     * Converts old stored settings into new profile setting.
+     */
+    private void createNewDefaultProfile() {
+        Log.d(TAG, "organization not null. compat profile setup");
+        // If old stored property settings exist, use them to create a new default profile.
+        String organization = settings.getString(Constants.ORGANIZATION, null);
+        String deviceId = settings.getString(Constants.DEVICE_ID, null);
+        String authToken = settings.getString(Constants.AUTH_TOKEN, null);
+        IoTProfile newProfile = new IoTProfile("default", organization, deviceId, authToken);
+        this.profiles.add(newProfile);
+        this.profileNames.add("default");
+
+        // Put the new profile into the store settings and remove the old stored properties.
+        Set<String> defaultProfile = newProfile.convertToSet();
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putStringSet(newProfile.getProfileName(), defaultProfile);
+        editor.remove(Constants.ORGANIZATION);
+        editor.remove(Constants.DEVICE_ID);
+        editor.remove(Constants.AUTH_TOKEN);
+        editor.commit();
+
+        this.setOrganization(newProfile.getOrganization());
+        this.setDeviceId(newProfile.getDeviceID());
+        this.setAuthToken(newProfile.getAuthorizationToken());
+
+        return;
+    }
+
+    /**
+     * Load existing profiles from application stored settings.
+     */
+    private void loadProfiles() {
+        // Compatability
+        if (settings.getString(Constants.ORGANIZATION, null) != null) {
+            createNewDefaultProfile();
+            return;
+        }
+
+        Map<String,?> profileList = settings.getAll();
+        if (profileList != null) {
+            for (String key : profileList.keySet()) {
+                Set<String> profile;// = new HashSet<String>();
+                try {
+                    // If the stored property is a Set<String> type, parse the profile and add it to the list of
+                    // profiles.
+                    if ((profile = settings.getStringSet(key, null)) != null) {
+                        Log.d(TAG, "profile name: " + key);
+                        IoTProfile newProfile = new IoTProfile(profile);
+                        this.profiles.add(newProfile);
+                        this.profileNames.add(newProfile.getProfileName());
+
+                        if (newProfile.getProfileName().equals("default")) {
+                            this.setOrganization(newProfile.getOrganization());
+                            this.setDeviceId(newProfile.getDeviceID());
+                            this.setAuthToken(newProfile.getAuthorizationToken());
+                        }
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+        }
     }
 
     /**
@@ -132,8 +192,55 @@ public class IoTStarterApplication extends Application {
         }
     }
 
-    // Getters and Setters
+    /**
+     * Overwrite an existing profile in the stored application settings.
+     * @param newProfile The profile to save.
+     */
+    public void overwriteProfile(IoTProfile newProfile) {
+        // Put the new profile into the store settings and remove the old stored properties.
+        Set<String> profileSet = newProfile.convertToSet();
 
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove(newProfile.getProfileName());
+        editor.putStringSet(newProfile.getProfileName(), profileSet);
+        editor.commit();
+
+        for (IoTProfile existingProfile : profiles) {
+            if (existingProfile.getProfileName().equals(newProfile.getProfileName())) {
+                profiles.remove(existingProfile);
+                break;
+            }
+        }
+        profiles.add(newProfile);
+    }
+    /**
+     * Save the profile to the application stored settings.
+     * @param profile The profile to save.
+     */
+    public void saveProfile(IoTProfile profile) {
+        // Put the new profile into the store settings and remove the old stored properties.
+        Set<String> profileSet = profile.convertToSet();
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putStringSet(profile.getProfileName(), profileSet);
+        editor.commit();
+        this.profiles.add(profile);
+        this.profileNames.add(profile.getProfileName());
+    }
+
+    /**
+     * Remove all saved profile information.
+     */
+    public void clearProfiles() {
+        this.profiles.clear();
+        this.profileNames.clear();
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    // Getters and Setters
     public String getCurrentRunningActivity() { return currentRunningActivity; }
 
     public void setCurrentRunningActivity(String currentRunningActivity) { this.currentRunningActivity = currentRunningActivity; }
@@ -144,9 +251,6 @@ public class IoTStarterApplication extends Application {
 
     public void setOrganization(String organization) {
         this.organization = organization;
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(Constants.ORGANIZATION, organization);
-        editor.commit();
     }
 
     public String getDeviceId() {
@@ -155,9 +259,6 @@ public class IoTStarterApplication extends Application {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(Constants.DEVICE_ID, deviceId);
-        editor.commit();
     }
 
     public String getAuthToken() {
@@ -166,9 +267,14 @@ public class IoTStarterApplication extends Application {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(Constants.AUTH_TOKEN, authToken);
-        editor.commit();
+    }
+
+    public void setConnectionType(Constants.ConnectionType type) {
+        this.connectionType = type;
+    }
+
+    public Constants.ConnectionType getConnectionType() {
+        return this.connectionType;
     }
 
     public boolean isConnected() {
@@ -195,6 +301,14 @@ public class IoTStarterApplication extends Application {
         this.receiveCount = receiveCount;
     }
 
+    public int getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
     public int getColor() {
         return color;
     }
@@ -211,26 +325,6 @@ public class IoTStarterApplication extends Application {
 
     public ArrayList<String> getMessageLog() {
         return messageLog;
-    }
-
-    public void setMessageLog(ArrayList<String> messageLog) {
-        this.messageLog = messageLog;
-    }
-
-    public HashMap<String, List<String>> getPayload() {
-        return payload;
-    }
-
-    public void setPayload(HashMap<String, List<String>> payload) {
-        this.payload = payload;
-    }
-
-    public List<String> getTopicsReceived() {
-        return topicsReceived;
-    }
-
-    public void setTopicsReceived(List<String> topicsReceived) {
-        this.topicsReceived = topicsReceived;
     }
 
     public boolean isAccelEnabled() {
@@ -261,7 +355,7 @@ public class IoTStarterApplication extends Application {
         return profiles;
     }
 
-    public void setProfiles(List<IoTProfile> profiles) {
-        this.profiles = profiles;
+    public ArrayList<String> getProfileNames() {
+        return profileNames;
     }
 }

@@ -20,16 +20,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
-import com.ibm.demo.IoTStarter.activities.IoTActivity;
-import com.ibm.demo.IoTStarter.activities.LogActivity;
-import com.ibm.demo.IoTStarter.activities.LogExpActivity;
-import com.ibm.demo.IoTStarter.activities.LoginActivity;
+import com.ibm.demo.IoTStarter.activities.*;
+import com.ibm.demo.IoTStarter.fragments.IoTFragment;
+import com.ibm.demo.IoTStarter.fragments.LogFragment;
+import com.ibm.demo.IoTStarter.fragments.LoginFragment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Steer incoming MQTT messages to the proper activities based on their content.
@@ -64,8 +63,6 @@ public class MessageConductor {
         Log.d(TAG, ".steerMessage() entered");
         JSONObject top = new JSONObject(payload);
         JSONObject d = top.getJSONObject("d");
-        //String deviceID = d.getString("deviceId");
-        //Log.v(TAG, "DeviceID from message: " + deviceID);
 
         if (topic.contains(Constants.COLOR_EVENT)) {
             Log.d(TAG, "Color Event");
@@ -84,7 +81,7 @@ public class MessageConductor {
             app.setColor(Color.argb(alpha, r, g, b));
 
             String runningActivity = app.getCurrentRunningActivity();
-            if (runningActivity != null && runningActivity.equals(IoTActivity.class.getName())) {
+            if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
                 Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
                 actionIntent.putExtra(Constants.INTENT_DATA, Constants.COLOR_EVENT);
                 context.sendBroadcast(actionIntent);
@@ -92,48 +89,67 @@ public class MessageConductor {
         } else if (topic.contains(Constants.LIGHT_EVENT)) {
             app.handleLightMessage();
         } else if (topic.contains(Constants.TEXT_EVENT)) {
-            // app.getMessageLog().add(d.getString("text"));
+            int unreadCount = app.getUnreadCount();
+            app.setUnreadCount(++unreadCount);
 
             // save payload in an arrayList
             List messageRecvd = new ArrayList<String>();
             messageRecvd.add(payload);
 
-            String uniqueTopic = topic+":"+ UUID.randomUUID().toString();
-
-            app.getPayload().put(uniqueTopic, messageRecvd);
-            app.getTopicsReceived().add(uniqueTopic);
+            app.getMessageLog().add(d.getString("text"));
 
             String runningActivity = app.getCurrentRunningActivity();
-            if (runningActivity != null && runningActivity.equals(LogExpActivity.class.getName())) {
+            if (runningActivity != null && runningActivity.equals(LogFragment.class.getName())) {
                 Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
                 actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
                 context.sendBroadcast(actionIntent);
             }
+
+            Intent unreadIntent;
+            if (runningActivity.equals(LogFragment.class.getName())) {
+                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
+            } else if (runningActivity.equals(LoginFragment.class.getName())) {
+                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
+            } else if (runningActivity.equals(IoTFragment.class.getName())) {
+                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+            } else if (runningActivity.equals(ProfilesActivity.class.getName())) {
+                unreadIntent = new Intent(Constants.APP_ID + Constants.INTENT_PROFILES);
+            } else {
+                return;
+            }
+
+            String messageText = d.getString("text");
+            if (messageText != null) {
+                unreadIntent.putExtra(Constants.INTENT_DATA, Constants.UNREAD_EVENT);
+                context.sendBroadcast(unreadIntent);
+            }
         } else if (topic.contains(Constants.ALERT_EVENT)) {
             // save payload in an arrayList
+            int unreadCount = app.getUnreadCount();
+            app.setUnreadCount(++unreadCount);
+
             List messageRecvd = new ArrayList<String>();
             messageRecvd.add(payload);
 
-            String uniqueTopic = topic+":"+ UUID.randomUUID().toString();
-
-            app.getPayload().put(uniqueTopic, messageRecvd);
-            app.getTopicsReceived().add(uniqueTopic);
+            app.getMessageLog().add(d.getString("text"));
 
             String runningActivity = app.getCurrentRunningActivity();
             if (runningActivity != null) {
-                if (runningActivity.equals(LogExpActivity.class.getName())) {
+                if (runningActivity.equals(LogFragment.class.getName())) {
                     Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
                     actionIntent.putExtra(Constants.INTENT_DATA, Constants.TEXT_EVENT);
                     context.sendBroadcast(actionIntent);
                 }
 
-                Intent alertIntent = null;
-                if (runningActivity.equals(LogExpActivity.class.getName())) {
+                Intent alertIntent;
+                if (runningActivity.equals(LogFragment.class.getName())) {
                     alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOG);
-                } else if (runningActivity.equals(LoginActivity.class.getName())) {
+                } else if (runningActivity.equals(LoginFragment.class.getName())) {
                     alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
-                } else if (runningActivity.equals(IoTActivity.class.getName())) {
+                } else if (runningActivity.equals(IoTFragment.class.getName())) {
                     alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
+                } else if (runningActivity.equals(ProfilesActivity.class.getName())) {
+                    alertIntent = new Intent(Constants.APP_ID + Constants.INTENT_PROFILES);
                 } else {
                     return;
                 }

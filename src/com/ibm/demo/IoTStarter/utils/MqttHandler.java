@@ -20,8 +20,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
-import com.ibm.demo.IoTStarter.activities.IoTActivity;
-import com.ibm.demo.IoTStarter.activities.LoginActivity;
+import com.ibm.demo.IoTStarter.fragments.IoTFragment;
+import com.ibm.demo.IoTStarter.fragments.LoginFragment;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -30,11 +30,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * This class provides a wrapper around the MQTT client API's and implements
@@ -74,9 +69,22 @@ public class MqttHandler implements MqttCallback {
 
         // check if client is already connected
         if (!isMqttConnected()) {
-            String serverHost = app.getOrganization() + "." + Constants.SETTINGS_MQTT_SERVER;
+            String serverHost;
             String serverPort = Constants.SETTINGS_MQTT_PORT;
-            String clientId = "d:" + app.getOrganization() + ":" + Constants.DEVICE_TYPE + ":" + app.getDeviceId();
+            String clientId;
+            if (Constants.M2M.equals(app.getOrganization())) {
+                serverHost = Constants.M2M_DEMO_SERVER;
+                clientId = Constants.M2M_CLIENTID + app.getDeviceId();
+                app.setConnectionType(Constants.ConnectionType.M2M);
+            } else if (Constants.QUICKSTART.equals(app.getOrganization())) {
+                serverHost = Constants.QUICKSTART_SERVER;
+                clientId = "d:" + app.getOrganization() + ":" + Constants.DEVICE_TYPE + ":" + app.getDeviceId();
+                app.setConnectionType(Constants.ConnectionType.QUICKSTART);
+            } else {
+                serverHost = app.getOrganization() + "." + Constants.SETTINGS_MQTT_SERVER;
+                clientId = "d:" + app.getOrganization() + ":" + Constants.DEVICE_TYPE + ":" + app.getDeviceId();
+                app.setConnectionType(Constants.ConnectionType.IOTF);
+            }
 
             Log.d(TAG, ".initMqttConnection() - Host name: " + serverHost + ", Port: " + serverPort
                     + ", client id: " + clientId);
@@ -94,8 +102,11 @@ public class MqttHandler implements MqttCallback {
             // create MqttConnectOptions and set the clean session flag
             MqttConnectOptions options = new MqttConnectOptions();
             options.setCleanSession(true);
-            options.setUserName(Constants.SETTINGS_USERNAME);
-            options.setPassword(app.getAuthToken().toCharArray());
+
+            if (app.getConnectionType() == Constants.ConnectionType.IOTF) {
+                options.setUserName(Constants.SETTINGS_USERNAME);
+                options.setPassword(app.getAuthToken().toCharArray());
+            }
             
             try {
                 // connect
@@ -205,7 +216,7 @@ public class MqttHandler implements MqttCallback {
                 app.setPublishCount(++count);
 
                 String runningActivity = app.getCurrentRunningActivity();
-                if (runningActivity != null && runningActivity.equals(IoTActivity.class.getName())) {
+                if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
                     Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
                     actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_PUBLISHED);
                     context.sendBroadcast(actionIntent);
@@ -235,7 +246,7 @@ public class MqttHandler implements MqttCallback {
         app.setConnected(false);
 
         String runningActivity = app.getCurrentRunningActivity();
-        if (runningActivity != null && runningActivity.equals(LoginActivity.class.getName())) {
+        if (runningActivity != null && runningActivity.equals(LoginFragment.class.getName())) {
             Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
             actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_DISCONNECT);
             context.sendBroadcast(actionIntent);
@@ -256,7 +267,7 @@ public class MqttHandler implements MqttCallback {
         int receiveCount = app.getReceiveCount();
         app.setReceiveCount(++receiveCount);
         String runningActivity = app.getCurrentRunningActivity();
-        if (runningActivity != null && runningActivity.equals(IoTActivity.class.getName())) {
+        if (runningActivity != null && runningActivity.equals(IoTFragment.class.getName())) {
             Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_IOT);
             actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_RECEIVED);
             context.sendBroadcast(actionIntent);

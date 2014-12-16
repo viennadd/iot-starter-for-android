@@ -20,7 +20,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
-import com.ibm.demo.IoTStarter.activities.LoginActivity;
+import com.ibm.demo.IoTStarter.fragments.LoginFragment;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
@@ -115,11 +115,13 @@ public class ActionListener implements IMqttActionListener {
 
         app.setConnected(true);
 
-        MqttHandler mqttHandler = MqttHandler.getInstance(context);
-        mqttHandler.subscribe(topicFactory.getCommandTopic("+"), 0);
+        if (app.getConnectionType() != Constants.ConnectionType.QUICKSTART) {
+            MqttHandler mqttHandler = MqttHandler.getInstance(context);
+            mqttHandler.subscribe(topicFactory.getCommandTopic("+"), 0);
+        }
 
         String runningActivity = app.getCurrentRunningActivity();
-        if (runningActivity != null && runningActivity.equals(LoginActivity.class.getName())) {
+        if (runningActivity != null && runningActivity.equals(LoginFragment.class.getName())) {
             Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
             actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_CONNECT);
             context.sendBroadcast(actionIntent);
@@ -149,7 +151,7 @@ public class ActionListener implements IMqttActionListener {
         app.setConnected(false);
 
         String runningActivity = app.getCurrentRunningActivity();
-        if (runningActivity != null && runningActivity.equals(LoginActivity.class.getName())) {
+        if (runningActivity != null && runningActivity.equals(LoginFragment.class.getName())) {
             Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
             actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_DISCONNECT);
             context.sendBroadcast(actionIntent);
@@ -168,7 +170,7 @@ public class ActionListener implements IMqttActionListener {
         app.setConnected(false);
 
         String runningActivity = app.getCurrentRunningActivity();
-        if (runningActivity != null && runningActivity.equals(LoginActivity.class.getName())) {
+        if (runningActivity != null && runningActivity.equals(LoginFragment.class.getName())) {
             Intent actionIntent = new Intent(Constants.APP_ID + Constants.INTENT_LOGIN);
             actionIntent.putExtra(Constants.INTENT_DATA, Constants.INTENT_DATA_DISCONNECT);
             context.sendBroadcast(actionIntent);

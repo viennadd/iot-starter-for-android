@@ -12,7 +12,7 @@
  *
  * Contributors: Allan Marube, Mike Robertson
  *******************************************************************************/
-package com.ibm.demo.IoTStarter;
+package com.ibm.demo.IoTStarter.views;
 
 import android.content.Context;
 import android.graphics.*;
@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.MotionEvent;
 
+import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.MessageFactory;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
@@ -99,7 +100,9 @@ public class DrawingView extends View {
         super.onSizeChanged(w,h,oldw,oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         drawCanvas = new Canvas(canvasBitmap);
-        colorBackground(app.getColor());
+        if (app != null) {
+            colorBackground(app.getColor());
+        }
     }
 
     /**
@@ -134,6 +137,10 @@ public class DrawingView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.v(TAG, ".onTouchEvent() entered");
+
+        if (app.getConnectionType() == Constants.ConnectionType.QUICKSTART) {
+            return true;
+        }
 
         //detect user touch
         float touchX = event.getX();

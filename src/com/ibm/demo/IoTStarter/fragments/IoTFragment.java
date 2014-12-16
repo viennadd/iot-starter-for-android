@@ -13,24 +13,22 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.demo.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.ibm.demo.IoTStarter.DrawingView;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.activities.MainActivity;
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.MessageFactory;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
@@ -41,43 +39,32 @@ import com.ibm.demo.IoTStarter.utils.TopicFactory;
  * to IoT. From this activity, users can send touchmove and text event messages. Users can also see the number
  * of messages the device has published and received while connected.
  */
-public class IoTActivity extends Activity {
-    private final static String TAG = IoTActivity.class.getName();
-    private Context context;
-    private IoTStarterApplication app;
-    private DrawingView drawingView;
-    private BroadcastReceiver iotBroadcastReceiver;
+public class IoTFragment extends IoTStarterFragment {
+    private final static String TAG = IoTFragment.class.getName();
 
     /**************************************************************************
      * Activity functions for establishing the activity
      **************************************************************************/
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, ".onCreate() entered");
-
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.iot);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.iot, container, false);
     }
 
     /**
      * Called when the activity is resumed.
      */
     @Override
-    protected void onResume() {
+    public void onResume() {
         Log.d(TAG, ".onResume() entered");
 
         super.onResume();
-        app = (IoTStarterApplication) getApplication();
+        app = (IoTStarterApplication) getActivity().getApplication();
         app.setCurrentRunningActivity(TAG);
 
-        if (iotBroadcastReceiver == null) {
+        if (broadcastReceiver == null) {
             Log.d(TAG, ".onResume() - Registering iotBroadcastReceiver");
-            iotBroadcastReceiver = new BroadcastReceiver() {
+            broadcastReceiver = new BroadcastReceiver() {
 
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -87,7 +74,7 @@ public class IoTActivity extends Activity {
             };
         }
 
-        getApplicationContext().registerReceiver(iotBroadcastReceiver,
+        getActivity().getApplicationContext().registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.APP_ID + Constants.INTENT_IOT));
 
         // initialise
@@ -98,10 +85,14 @@ public class IoTActivity extends Activity {
      * Called when the activity is destroyed.
      */
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         Log.d(TAG, ".onDestroy() entered");
 
-        getApplicationContext().unregisterReceiver(iotBroadcastReceiver);
+        try {
+            getActivity().getApplicationContext().unregisterReceiver(broadcastReceiver);
+        } catch (IllegalArgumentException iae) {
+            // Do nothing
+        }
         super.onDestroy();
     }
 
@@ -109,17 +100,14 @@ public class IoTActivity extends Activity {
      * Initializing onscreen elements and shared properties
      */
     private void initializeIoTActivity() {
-        Log.d(TAG, ".initializeIoTActivity() entered");
+        Log.d(TAG, ".initializeIoTFragment() entered");
 
-        context = getApplicationContext();
-        drawingView = (DrawingView) findViewById(R.id.drawing);
-        drawingView.setContext(context);
-        drawingView.colorBackground(app.getColor());
+        context = getActivity().getApplicationContext();
 
         updateViewStrings();
 
         // setup button listeners
-        Button button = (Button) findViewById(R.id.sendText);
+        Button button = (Button) getActivity().findViewById(R.id.sendText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,13 +119,14 @@ public class IoTActivity extends Activity {
     /**
      * Update strings in the activity based on IoTStarterApplication values.
      */
-    private void updateViewStrings() {
+    @Override
+    protected void updateViewStrings() {
         Log.d(TAG, ".updateViewStrings() entered");
         // DeviceId should never be null at this point.
         if (app.getDeviceId() != null) {
-            ((TextView) findViewById(R.id.deviceIDIoT)).setText(app.getDeviceId());
+            ((TextView) getActivity().findViewById(R.id.deviceIDIoT)).setText(app.getDeviceId());
         } else {
-            ((TextView) findViewById(R.id.deviceIDIoT)).setText("-");
+            ((TextView) getActivity().findViewById(R.id.deviceIDIoT)).setText("-");
         }
 
         // Update publish count view.
@@ -145,6 +134,9 @@ public class IoTActivity extends Activity {
 
         // Update receive count view.
         processReceiveIntent();
+
+        int unreadCount = app.getUnreadCount();
+        ((MainActivity) getActivity()).updateBadge(getActivity().getActionBar().getTabAt(2), unreadCount);
     }
 
     /**************************************************************************
@@ -157,23 +149,33 @@ public class IoTActivity extends Activity {
      */
     private void handleSendText() {
         Log.d(TAG, ".handleSendText() entered");
-        final EditText input = new EditText(context);
-        new AlertDialog.Builder(this)
-                .setTitle("Send Text Message")
-                .setMessage("Input message text to send.")
-                .setView(input)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        Editable value = input.getText();
-                        String messageData = MessageFactory.getTextMessage(value.toString());
-                        MqttHandler mqtt = MqttHandler.getInstance(context);
-                        mqtt.publish(TopicFactory.getEventTopic(Constants.TEXT_EVENT), messageData, false, 0);
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Do nothing.
-            }
-        }).show();
+        if (app.getConnectionType() != Constants.ConnectionType.QUICKSTART) {
+            final EditText input = new EditText(context);
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Send Text Message")
+                    .setMessage("Input message text to send.")
+                    .setView(input)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Editable value = input.getText();
+                            String messageData = MessageFactory.getTextMessage(value.toString());
+                            MqttHandler mqtt = MqttHandler.getInstance(context);
+                            mqtt.publish(TopicFactory.getEventTopic(Constants.TEXT_EVENT), messageData, false, 0);
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Do nothing.
+                }
+            }).show();
+        } else {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Send Text Message")
+                    .setMessage("Text messages are disabled while connected to QuickStart.")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    }).show();
+        }
     }
 
     /**************************************************************************
@@ -186,6 +188,10 @@ public class IoTActivity extends Activity {
      */
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");
+
+        // No matter the intent, update log button based on app.unreadCount.
+        updateViewStrings();
+
         String data = intent.getStringExtra(Constants.INTENT_DATA);
         assert data != null;
         if (data.equals(Constants.INTENT_DATA_PUBLISHED)) {
@@ -196,13 +202,10 @@ public class IoTActivity extends Activity {
             processAccelEvent();
         } else if (data.equals(Constants.COLOR_EVENT)) {
             Log.d(TAG, "Updating background color");
-            View view = this.getWindow().getDecorView();
-            view.setBackgroundColor(app.getColor());
-            drawingView.colorBackground(app.getColor());
-            ((LinearLayout) findViewById(R.id.iotRoot)).setBackgroundColor(app.getColor());
+            getView().setBackgroundColor(app.getColor());
         } else if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
                     .setTitle("Received Alert")
                     .setMessage(message)
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -220,7 +223,7 @@ public class IoTActivity extends Activity {
         Log.v(TAG, ".processPublishIntent() entered");
         String publishedString = this.getString(R.string.messagesPublished);
         publishedString = publishedString.replace("0",Integer.toString(app.getPublishCount()));
-        ((TextView) findViewById(R.id.messagesPublishedView)).setText(publishedString);
+        ((TextView) getActivity().findViewById(R.id.messagesPublishedView)).setText(publishedString);
     }
 
     /**
@@ -231,7 +234,7 @@ public class IoTActivity extends Activity {
         Log.v(TAG, ".processReceiveIntent() entered");
         String receivedString = this.getString(R.string.messagesReceived);
         receivedString = receivedString.replace("0",Integer.toString(app.getReceiveCount()));
-        ((TextView) findViewById(R.id.messagesReceivedView)).setText(receivedString);
+        ((TextView) getActivity().findViewById(R.id.messagesReceivedView)).setText(receivedString);
     }
 
     /**
@@ -240,68 +243,8 @@ public class IoTActivity extends Activity {
     private void processAccelEvent() {
         Log.v(TAG, ".processAccelEvent()");
         float[] accelData = app.getAccelData();
-        ((TextView) findViewById(R.id.accelX)).setText("x: " + accelData[0]);
-        ((TextView) findViewById(R.id.accelY)).setText("y: " + accelData[1]);
-        ((TextView) findViewById(R.id.accelZ)).setText("z: " + accelData[2]);
-    }
-
-    /**************************************************************************
-     * Functions to handle the iot_menu bar
-     **************************************************************************/
-
-    /**
-     * Switch to the Login activity.
-     */
-    private void openLogin() {
-        Log.d(TAG, ".openLogin() entered");
-        Intent loginIntent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(loginIntent);
-    }
-
-    /**
-     * Switch to the Log activity.
-     */
-    private void openLog() {
-        Log.d(TAG, ".openLog() entered");
-        Intent logIntent = new Intent(getApplicationContext(), LogExpActivity.class);
-        startActivity(logIntent);
-    }
-
-    /**
-     * Infalte the options iot_menu.
-     * @param menu The iot_menu to create.
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, ".onCreateOptions() entered");
-        getMenuInflater().inflate(R.menu.iot_menu, menu);
-        return true;
-    }
-
-    /**
-     * Process the selected iot_menu item.
-     * @param item The selected iot_menu item.
-     * @return true in all cases.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, ".onOptionsItemSelected() entered");
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_login:
-                openLogin();
-                return true;
-            case R.id.action_iot:
-                return true;
-            case R.id.action_log:
-                openLog();
-                return true;
-            case R.id.action_accel:
-                app.toggleAccel();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        ((TextView) getActivity().findViewById(R.id.accelX)).setText("x: " + accelData[0]);
+        ((TextView) getActivity().findViewById(R.id.accelY)).setText("y: " + accelData[1]);
+        ((TextView) getActivity().findViewById(R.id.accelZ)).setText("z: " + accelData[2]);
     }
 }

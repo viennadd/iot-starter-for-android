@@ -13,22 +13,22 @@
  * Contributors:
  *    Mike Robertson - initial contribution
  *******************************************************************************/
-package com.ibm.demo.IoTStarter.activities;
+package com.ibm.demo.IoTStarter.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
+import com.ibm.demo.IoTStarter.activities.MainActivity;
 import com.ibm.demo.IoTStarter.utils.Constants;
 import com.ibm.demo.IoTStarter.utils.DeviceSensor;
 import com.ibm.demo.IoTStarter.utils.LocationUtils;
@@ -38,42 +38,32 @@ import com.ibm.demo.IoTStarter.utils.MqttHandler;
  * The login activity of the IoTStarter application. Provides functionality for
  * connecting to IoT. Also displays device information.
  */
-public class LoginActivity extends Activity {
-    private final static String TAG = LoginActivity.class.getName();
-    private Context context;
-    private IoTStarterApplication app;
-    private BroadcastReceiver loginBroadcastReceiver;
+public class LoginFragment extends IoTStarterFragment {
+    private final static String TAG = LoginFragment.class.getName();
 
     /**************************************************************************
      * Activity functions for establishing the activity
      **************************************************************************/
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, ".onCreate() entered");
-
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.login);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.login, container, false);
     }
 
     /**
      * Called when the activity is resumed.
      */
     @Override
-    protected void onResume() {
+    public void onResume() {
         Log.d(TAG, ".onResume() entered");
 
         super.onResume();
-        app = (IoTStarterApplication) getApplication();
+        app = (IoTStarterApplication) getActivity().getApplication();
         app.setCurrentRunningActivity(TAG);
 
-        if (loginBroadcastReceiver == null) {
+        if (broadcastReceiver == null) {
             Log.d(TAG, ".onResume() - Registering loginBroadcastReceiver");
-            loginBroadcastReceiver = new BroadcastReceiver() {
+            broadcastReceiver = new BroadcastReceiver() {
 
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -83,7 +73,7 @@ public class LoginActivity extends Activity {
             };
         }
 
-        getApplicationContext().registerReceiver(loginBroadcastReceiver,
+        getActivity().getApplicationContext().registerReceiver(broadcastReceiver,
                 new IntentFilter(Constants.APP_ID + Constants.INTENT_LOGIN));
 
         // initialise
@@ -94,10 +84,14 @@ public class LoginActivity extends Activity {
      * Called when the activity is destroyed.
      */
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         Log.d(TAG, ".onDestroy() entered");
 
-        getApplicationContext().unregisterReceiver(loginBroadcastReceiver);
+        try {
+            getActivity().getApplicationContext().unregisterReceiver(broadcastReceiver);
+        } catch (IllegalArgumentException iae) {
+            // Do nothing
+        }
         super.onDestroy();
     }
 
@@ -105,9 +99,9 @@ public class LoginActivity extends Activity {
      * Initializing onscreen elements and shared properties
      */
     private void initializeLoginActivity() {
-        Log.d(TAG, ".initializeLoginActivity() entered");
+        Log.d(TAG, ".initializeLoginFragment() entered");
 
-        context = getApplicationContext();
+        context = getActivity().getApplicationContext();
 
         updateViewStrings();
 
@@ -118,25 +112,30 @@ public class LoginActivity extends Activity {
     /**
      * Update strings in the activity based on IoTStarterApplication values.
      */
-    private void updateViewStrings() {
+    @Override
+    protected void updateViewStrings() {
+        Log.d(TAG, ".updateViewStrings() entered");
         // Update only if the organization is set to some non-empty string.
         if (app.getOrganization() != null) {
-            ((EditText) findViewById(R.id.organizationValue)).setText(app.getOrganization());
+            ((EditText) getActivity().findViewById(R.id.organizationValue)).setText(app.getOrganization());
         }
 
         // DeviceId should never be null at this point.
         if (app.getDeviceId() != null) {
-            ((EditText) findViewById(R.id.deviceIDValue)).setText(app.getDeviceId());
+            ((EditText) getActivity().findViewById(R.id.deviceIDValue)).setText(app.getDeviceId());
         }
 
         if (app.getAuthToken() != null) {
-            ((EditText) findViewById(R.id.authTokenValue)).setText(app.getAuthToken());
+            ((EditText) getActivity().findViewById(R.id.authTokenValue)).setText(app.getAuthToken());
         }
 
         // Set 'Connected to IoT' to Yes if MQTT client is connected. Leave as No otherwise.
         if (app.isConnected()) {
             processConnectIntent();
         }
+
+        int unreadCount = app.getUnreadCount();
+        ((MainActivity) getActivity()).updateBadge(getActivity().getActionBar().getTabAt(2), unreadCount);
     }
 
     /**
@@ -145,7 +144,7 @@ public class LoginActivity extends Activity {
     private void initializeButtons() {
         Log.d(TAG, ".initializeButtons() entered");
 
-        Button button = (Button) findViewById(R.id.showTokenButton);
+        Button button = (Button) getActivity().findViewById(R.id.showTokenButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,21 +152,13 @@ public class LoginActivity extends Activity {
             }
         });
 
-        button = (Button) findViewById(R.id.activateButton);
+        button = (Button) getActivity().findViewById(R.id.activateButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleActivate();
             }
         });
-
-        //button = (Button) findViewById(R.id.profilesButton);
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleProfiles();
-            }
-        });*/
     }
 
     /**************************************************************************
@@ -192,7 +183,7 @@ public class LoginActivity extends Activity {
      * Display alert dialog indicating what properties must be set in order to connect to IoT.
      */
     private void displaySetPropertiesDialog() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(getActivity())
                 .setTitle("Unable to connect")
                 .setMessage("Organization ID, Device ID and Auth Token must be set in order to connect.")
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -208,12 +199,12 @@ public class LoginActivity extends Activity {
      */
     private void handleActivate() {
         Log.d(TAG, ".handleActivate() entered");
-        String buttonTitle = ((Button) findViewById(R.id.activateButton)).getText().toString();
+        String buttonTitle = ((Button) getActivity().findViewById(R.id.activateButton)).getText().toString();
         MqttHandler mqttHandle = MqttHandler.getInstance(context);
-        Button activateButton = (Button) findViewById(R.id.activateButton);
-        app.setDeviceId(((EditText) findViewById(R.id.deviceIDValue)).getText().toString());
-        app.setOrganization(((EditText) findViewById(R.id.organizationValue)).getText().toString());
-        app.setAuthToken(((EditText) findViewById(R.id.authTokenValue)).getText().toString());
+        Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
+        app.setDeviceId(((EditText) getActivity().findViewById(R.id.deviceIDValue)).getText().toString());
+        app.setOrganization(((EditText) getActivity().findViewById(R.id.organizationValue)).getText().toString());
+        app.setAuthToken(((EditText) getActivity().findViewById(R.id.authTokenValue)).getText().toString());
         activateButton.setEnabled(false);
         if (buttonTitle.equals(getResources().getString(R.string.activate_button)) && app.isConnected() == false) {
             if (checkCanConnect()) {
@@ -232,9 +223,9 @@ public class LoginActivity extends Activity {
      */
     private void handleShowToken() {
         Log.d(TAG, ".handleShowToken() entered");
-        Button showTokenButton = (Button) findViewById(R.id.showTokenButton);
+        Button showTokenButton = (Button) getActivity().findViewById(R.id.showTokenButton);
         String buttonTitle = showTokenButton.getText().toString();
-        EditText tokenText = (EditText) findViewById(R.id.authTokenValue);
+        EditText tokenText = (EditText) getActivity().findViewById(R.id.authTokenValue);
         if (buttonTitle.equals(getResources().getString(R.string.showToken_button))) {
             showTokenButton.setText(getResources().getString(R.string.hideToken_button));
             tokenText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -255,6 +246,10 @@ public class LoginActivity extends Activity {
      */
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");
+
+        // No matter the intent, update log button based on app.unreadCount.
+        updateViewStrings();
+
         String data = intent.getStringExtra(Constants.INTENT_DATA);
         assert data != null;
         if (data.equals(Constants.INTENT_DATA_CONNECT)) {
@@ -264,7 +259,7 @@ public class LoginActivity extends Activity {
             processDisconnectIntent();
         } else if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
                     .setTitle("Received Alert")
                     .setMessage(message)
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -280,11 +275,11 @@ public class LoginActivity extends Activity {
      */
     private void processConnectIntent() {
         Log.d(TAG, ".processConnectIntent() entered");
-        Button activateButton = (Button) findViewById(R.id.activateButton);
+        Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
         activateButton.setEnabled(true);
         String connectedString = this.getString(R.string.isConnected);
         connectedString = connectedString.replace("No", "Yes");
-        ((TextView) findViewById(R.id.isConnected)).setText(connectedString);
+        ((TextView) getActivity().findViewById(R.id.isConnected)).setText(connectedString);
         activateButton.setText(getResources().getString(R.string.deactivate_button));
         if (app.isAccelEnabled()) {
             LocationUtils locUtils = LocationUtils.getInstance(context);
@@ -300,9 +295,9 @@ public class LoginActivity extends Activity {
      */
     private void processDisconnectIntent() {
         Log.d(TAG, ".processDisconnectIntent() entered");
-        Button activateButton = (Button) findViewById(R.id.activateButton);
+        Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
         activateButton.setEnabled(true);
-        ((TextView) findViewById(R.id.isConnected)).setText(this.getString(R.string.isConnected));
+        ((TextView) getActivity().findViewById(R.id.isConnected)).setText(this.getString(R.string.isConnected));
         activateButton.setText(getResources().getString(R.string.activate_button));
         if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
             LocationUtils locUtils = LocationUtils.getInstance(context);
@@ -313,73 +308,4 @@ public class LoginActivity extends Activity {
         }
     }
 
-    /**************************************************************************
-     * Functions to handle the iot_menu bar
-     **************************************************************************/
-
-    /**
-     * Switch to the IoT activity.
-     */
-    private void openIoT() {
-        Log.d(TAG, ".openIoT() entered");
-        Intent iotIntent = new Intent(getApplicationContext(), IoTActivity.class);
-        startActivity(iotIntent);
-    }
-
-    /**
-     * Switch to the Log activity.
-     */
-    private void openLog() {
-        Log.d(TAG, ".openLog() entered");
-        Intent logIntent = new Intent(getApplicationContext(), LogExpActivity.class);
-        startActivity(logIntent);
-    }
-
-    private void openProfiles() {
-        Log.d(TAG, ".handleProfiles() entered");
-        Intent profilesIntent = new Intent(getApplicationContext(), ProfilesActivity.class);
-        startActivity(profilesIntent);
-    }
-
-    /**
-     * Infalte the options iot_menu.
-     *
-     * @param menu The iot_menu to create.
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, ".onCreateOptions() entered");
-        getMenuInflater().inflate(R.menu.login_menu, menu);
-        return true;
-    }
-
-    /**
-     * Process the selected iot_menu item.
-     *
-     * @param item The selected iot_menu item.
-     * @return true in all cases.
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, ".onOptionsItemSelected() entered");
-        // Handle presses on the action bar items
-        switch (item.getItemId()) {
-            case R.id.action_login:
-                return true;
-            case R.id.action_iot:
-                openIoT();
-                return true;
-            case R.id.action_log:
-                openLog();
-                return true;
-            case R.id.action_accel:
-                app.toggleAccel();
-                return true;
-            /*case R.id.action_profiles:
-                openProfiles();*/
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }
