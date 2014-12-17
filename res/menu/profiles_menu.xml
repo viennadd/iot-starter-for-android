@@ -16,7 +16,6 @@
 *******************************************************************************-->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item android:id="@+id/action_accel"
           android:title="@string/accel_label"
           android:orderInCategory="0"

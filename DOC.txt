@@ -17,7 +17,8 @@ Permissions:
 
 Main Application Handle:
 - IoTStarterApplication
-  These 3 properties are stored in persistent application data:
+  Application persistent data stores profiles that each contain 4 properties:
+  - Profile Name - A name for the stored profile. Set by user when saving the profile.
   - Auth Token - Set by user on login layout
   - Device ID - Set by user on login layout
   - Organization ID - Set by user on login layout
@@ -31,29 +32,38 @@ Main Application Handle:
   - Color - Default: Gray, Updated on color message received
 
 Activities:
-- Login - Initial activity of the application
-- IoT - Sends text, accel or touchmove event messages, displays color command messages on background
-- Log - Displays received text command messages
+- MainActivity: Main activity of the application that provides ActionBar tabs for navigating the application fragments.
+- ProfilesActivity: Activity for managing stored profile settings for the application.
+
+Fragments:
+- IoTStarterFragment: Extends Fragment. Implements the menu for Login, IoT and Draw fragments
+- LoginFragment: Extends IoTStarterFragment. This is the first page that is displayed when launching the application.
+- IoTFragment: Extends IoTStarterFragment. Displays info about the connection and sensor data.
+- LogFragment: Extends ListFragment. Displays the list of received text and alert messages.
+- DrawFragment: Extends IoTStarterFragment. Creates the drawing view for creating touchmove messages.
 
 Views:
-- DrawingView - Part of IoT Activity, background color based on IoTStarterApplication Color property, allows for
+- DrawingView - Part of Draw Fragment, background color based on IoTStarterApplication Color property, allows for
                 sending of touchmove messages.
 
 Utils:
-- MqttHandler - Perform all MQTT related actions. Send connection loss intents to LoginActivity and message arrived
-                intents to IoTActivity
-- ActionListener - Process results of MQTT API calls, send connection intents to LoginActivity and message publish
-                intents to IoTActivity
-- MessageConductor - Process received messages, send color intents to IoTActivity, send text intents to LogActivity
-- TopicFactory - Generate command and event topic strings
-- MessageFactory - Unused currently
+- MqttHandler - Perform all MQTT related actions. Send connection loss intents to Login Fragment and message arrived
+                intents to IoT Fragment.
+- ActionListener - Process results of MQTT API calls, send connection intents to Login Fragment and message publish
+                intents to IoT Fragment.
+- MessageConductor - Process received messages, send color intents to IoT Fragment, send text intents to Log Fragment,
+                send alert intents to the active fragment.
+- TopicFactory - Generate command and event topic strings.
+- MessageFactory - Generate message data for publishing to IoT.
 - DeviceSensor - Handle device sensors for accelerometer, magnetometer, orientation
-- PayloadAdapter - Format JSON text messages for LogActivity
+- IoTProfile - Stores application connection settings.
+- LocationUtils - Gets latitude and longitude for including in accel messages.
 
 Intents:
-- INTENT_LOGIN - LoginActivity
-- INTENT_IOT   - IoTActivity
-- INTENT_LOG   - LoginActivity
+- INTENT_LOGIN - LoginFragment
+- INTENT_IOT   - IoTFragment
+- INTENT_LOG   - LogFragment
+- INTENT_PROFILES - ProfilesActivity
 
   The following are sent to LoginActivity by MqttHandler
   - INTENT_DATA_CONNECT - mqtt client connected

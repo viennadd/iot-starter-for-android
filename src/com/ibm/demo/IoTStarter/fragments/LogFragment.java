@@ -189,7 +189,12 @@ public class LogFragment extends ListFragment {
                 app.clearProfiles();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                if (item.getTitle().equals(getResources().getString(R.string.app_name))) {
+                    getActivity().openOptionsMenu();
+                    return true;
+                } else {
+                    return super.onOptionsItemSelected(item);
+                }
         }
     }
 }

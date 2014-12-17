@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.ibm.demo.IoTStarter.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.*;
@@ -224,6 +225,7 @@ public class ProfilesActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, ".onCreateOptions() entered");
         getMenuInflater().inflate(R.menu.profiles_menu, menu);
+
         return true;
     }
 
@@ -251,7 +253,12 @@ public class ProfilesActivity extends Activity {
                 app.getMessageLog().clear();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+                if (item.getTitle().equals(getResources().getString(R.string.app_name))) {
+                    openOptionsMenu();
+                    return true;
+                } else {
+                    return super.onOptionsItemSelected(item);
+                }
         }
     }
 }
