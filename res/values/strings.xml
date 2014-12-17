@@ -20,6 +20,12 @@
     <string name="app_name">IoT Starter</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Generic Strings -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+
     <!-- Error messages -->
     <string name="broker_unavailable_check_connectivity">Server is unavailable. Please check your connectivity and try again</string>
     <string name="exit">Exit</string>
@@ -33,40 +39,31 @@
     <string name="profiles_label">Profiles</string>
     <string name="clear_profiles_label">Clear Profiles</string>
 
-    <!-- Begin Login Activity -->
-
+    <!-- Begin Login Fragment -->
     <string name="showToken_button">Show Auth Token</string>
     <string name="hideToken_button">Hide Auth Token</string>
     <string name="activate_button">Activate Sensor</string>
     <string name="deactivate_button">Deactivate Sensor</string>
-    <string name="credential_button">Enter Credentials</string>
 
-    <string name="currentOrganization">Current Organization: -</string>
-    <string name="deviceID">DeviceID: -</string>
-    <string name="isConnected">Connected to IoT: No</string>
+    <string name="device_id">DeviceID: -</string>
+    <string name="is_connected">Connected to IoT: No</string>
 
-    <string name="organizationHint">Organization ID</string>
-    <string name="deviceIDHint">Device ID</string>
-    <string name="authTokenHint">Auth Token</string>
+    <string name="organization_hint">Organization ID</string>
+    <string name="device_id_hint">Device ID</string>
+    <string name="auth_token_hint">Auth Token</string>
+    <!-- End Login Fragment -->
 
-    <!-- End Login Activity -->
-
-    <!-- Begin IoT Activity -->
-    <string name="accelInfo">Accelerometer Data</string>
-    <string name="accelX">x: 0.0</string>
-    <string name="accelY">y: 0.0</string>
-    <string name="accelZ">z: 0.0</string>
-    <string name="messagesPublished">Messages Published: 0</string>
-    <string name="messagesReceived">Messages Received: 0</string>
-    <string name="deviceIDSettingIoT">Device ID: </string>
-    <string name="deviceIDValueIoT">Device ID</string>
-
-    <!-- End IoT Activity -->
-
-    <!-- Begin Input Pad Activity -->
-    <string name="sendText">Send Text</string>
-
-    <!-- End Input Pad Activity -->
+    <!-- Begin IoT Fragment -->
+    <string name="accel_info">Accelerometer Data</string>
+    <string name="accel_x">x: 0.0</string>
+    <string name="accel_y">y: 0.0</string>
+    <string name="accel_z">z: 0.0</string>
+    <string name="messages_published">Messages Published: 0</string>
+    <string name="messages_received">Messages Received: 0</string>
+    <string name="device_id_iot">Device ID: </string>
+    <string name="device_id_iot_value">Device ID</string>
+    <string name="send_text">Send Text</string>
+    <!-- End IoT Fragment -->
 
     <!-- Begin Settings Activity -->
     <string name="organizationSetting">Organization: </string>
@@ -78,7 +75,28 @@
     <string name="authTokenValue">Auth Token</string>
 
     <string name="save_button">Save Settings</string>
-    <string name="back_button">Back</string>
 
     <!-- End Settings Activity -->
+
+    <!-- Profiles activity dialog -->
+    <string name="save_dialog_title">Save Profile</string>
+    <string name="save_dialog_text">Enter a name for the profile.</string>
+    <string name="save_dialog_ok">Save</string>
+
+    <string name="profile_exists_title">Profile Name Exists</string>
+    <string name="profile_exists_text">The profile name you have entered already exists. Overwrite?</string>
+    <!-- End Properties activity dialog -->
+
+    <string name="alert_dialog_title">Received Alert</string>
+
+    <!-- IoT Fragment dialog -->
+    <string name="send_text_title">Send Text Message</string>
+    <string name="send_text_text">Input message text to send.</string>
+    <string name="send_text_invalid">Text messages are disabled while connected to QuickStart.</string>
+    <!-- End IoT Fragment dialog -->
+
+    <!-- Login Fragment dialog -->
+    <string name="connect_props_title">Unable to connect</string>
+    <string name="connect_props_text">Organization ID, Device ID and Auth Token must be set in order to connect.</string>
+    <!-- End Login Fragment dialog -->
 </resources>

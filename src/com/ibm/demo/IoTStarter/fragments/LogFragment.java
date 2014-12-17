@@ -26,7 +26,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
-import com.ibm.demo.IoTStarter.activities.MainActivity;
 import com.ibm.demo.IoTStarter.activities.ProfilesActivity;
 import com.ibm.demo.IoTStarter.utils.Constants;
 
@@ -135,9 +134,9 @@ public class LogFragment extends ListFragment {
             listAdapter.notifyDataSetInvalidated();
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Received Alert")
+                    .setTitle(getResources().getString(R.string.alert_dialog_title))
                     .setMessage(message)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     }).show();

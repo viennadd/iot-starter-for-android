@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.ibm.demo.IoTStarter.utils;
 
-import android.util.Log;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,8 +25,10 @@ public class IoTProfile {
     private String deviceID;
     private String authorizationToken;
 
-    public IoTProfile() {
-    }
+    private static final String NAME_PREFIX = "name:";
+    private static final String ORG_PREFIX = "org:";
+    private static final String DEVICE_ID_PREFIX = "deviceId:";
+    private static final String AUTH_TOKEN_PREFIX = "authToken:";
 
     public IoTProfile(String profileName, String organization, String deviceID, String authorizationToken) {
         this.profileName = profileName;
@@ -41,14 +41,14 @@ public class IoTProfile {
         Iterator<String> iter = profileSet.iterator();
         while (iter.hasNext()) {
             String value = iter.next();
-            if (value.contains("name:")) {
-                this.profileName = value.substring(5);
-            } else if (value.contains("org:")) {
-                this.organization = value.substring(4);
-            } else if (value.contains("deviceId:")) {
-                this.deviceID = value.substring(9);
-            } else if (value.contains("authToken:")) {
-                this.authorizationToken = value.substring(10);
+            if (value.contains(NAME_PREFIX)) {
+                this.profileName = value.substring(NAME_PREFIX.length());
+            } else if (value.contains(ORG_PREFIX)) {
+                this.organization = value.substring(ORG_PREFIX.length());
+            } else if (value.contains(DEVICE_ID_PREFIX)) {
+                this.deviceID = value.substring(DEVICE_ID_PREFIX.length());
+            } else if (value.contains(AUTH_TOKEN_PREFIX)) {
+                this.authorizationToken = value.substring(AUTH_TOKEN_PREFIX.length());
             }
         }
     }
@@ -56,10 +56,10 @@ public class IoTProfile {
     public Set<String> convertToSet() {
         // Put the new profile into the store settings and remove the old stored properties.
         Set<String> profileSet = new HashSet<String>();
-        profileSet.add("name:"+this.profileName);
-        profileSet.add("org:" + this.organization);
-        profileSet.add("deviceId:" + this.deviceID);
-        profileSet.add("authToken:" + this.authorizationToken);
+        profileSet.add(NAME_PREFIX + this.profileName);
+        profileSet.add(ORG_PREFIX + this.organization);
+        profileSet.add(DEVICE_ID_PREFIX + this.deviceID);
+        profileSet.add(AUTH_TOKEN_PREFIX + this.authorizationToken);
 
         return profileSet;
     }
@@ -68,31 +68,15 @@ public class IoTProfile {
         return profileName;
     }
 
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
-    }
-
     public String getOrganization() {
         return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
     }
 
     public String getDeviceID() {
         return deviceID;
     }
 
-    public void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
-    }
-
     public String getAuthorizationToken() {
         return authorizationToken;
-    }
-
-    public void setAuthorizationToken(String authorizationToken) {
-        this.authorizationToken = authorizationToken;
     }
 }

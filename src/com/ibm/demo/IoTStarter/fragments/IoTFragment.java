@@ -152,26 +152,26 @@ public class IoTFragment extends IoTStarterFragment {
         if (app.getConnectionType() != Constants.ConnectionType.QUICKSTART) {
             final EditText input = new EditText(context);
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Send Text Message")
-                    .setMessage("Input message text to send.")
+                    .setTitle(getResources().getString(R.string.send_text_title))
+                    .setMessage(getResources().getString(R.string.send_text_text))
                     .setView(input)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             Editable value = input.getText();
                             String messageData = MessageFactory.getTextMessage(value.toString());
                             MqttHandler mqtt = MqttHandler.getInstance(context);
                             mqtt.publish(TopicFactory.getEventTopic(Constants.TEXT_EVENT), messageData, false, 0);
                         }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     // Do nothing.
                 }
             }).show();
         } else {
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Send Text Message")
-                    .setMessage("Text messages are disabled while connected to QuickStart.")
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setTitle(getResources().getString(R.string.send_text_title))
+                    .setMessage(getResources().getString(R.string.send_text_invalid))
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     }).show();
@@ -206,9 +206,9 @@ public class IoTFragment extends IoTStarterFragment {
         } else if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Received Alert")
+                    .setTitle(getResources().getString(R.string.alert_dialog_title))
                     .setMessage(message)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     }).show();
@@ -221,7 +221,7 @@ public class IoTFragment extends IoTStarterFragment {
      */
     private void processPublishIntent() {
         Log.v(TAG, ".processPublishIntent() entered");
-        String publishedString = this.getString(R.string.messagesPublished);
+        String publishedString = this.getString(R.string.messages_published);
         publishedString = publishedString.replace("0",Integer.toString(app.getPublishCount()));
         ((TextView) getActivity().findViewById(R.id.messagesPublishedView)).setText(publishedString);
     }
@@ -232,7 +232,7 @@ public class IoTFragment extends IoTStarterFragment {
      */
     private void processReceiveIntent() {
         Log.v(TAG, ".processReceiveIntent() entered");
-        String receivedString = this.getString(R.string.messagesReceived);
+        String receivedString = this.getString(R.string.messages_received);
         receivedString = receivedString.replace("0",Integer.toString(app.getReceiveCount()));
         ((TextView) getActivity().findViewById(R.id.messagesReceivedView)).setText(receivedString);
     }

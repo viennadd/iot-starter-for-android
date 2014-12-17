@@ -15,19 +15,14 @@
  *******************************************************************************/
 package com.ibm.demo.IoTStarter.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.ibm.demo.IoTStarter.views.DrawingView;
 import com.ibm.demo.IoTStarter.IoTStarterApplication;
 import com.ibm.demo.IoTStarter.R;
-import com.ibm.demo.IoTStarter.utils.Constants;
+import com.ibm.demo.IoTStarter.views.DrawingView;
 
 /**
  * Created by Michael on 12/15/2014.
@@ -61,21 +56,6 @@ public class DrawFragment extends IoTStarterFragment {
         super.onResume();
         app = (IoTStarterApplication) getActivity().getApplication();
 
-        if (broadcastReceiver == null) {
-            Log.d(TAG, ".onResume() - Registering drawBroadcastReceiver");
-            broadcastReceiver = new BroadcastReceiver() {
-
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    Log.d(TAG, ".onReceive() - Received intent for drawBroadcastReceiver");
-                    processIntent(intent);
-                }
-            };
-        }
-
-        getActivity().getApplicationContext().registerReceiver(broadcastReceiver,
-                new IntentFilter(Constants.APP_ID + Constants.INTENT_DRAW));
-
         // initialise
         initializeIoTActivity();
     }
@@ -105,23 +85,5 @@ public class DrawFragment extends IoTStarterFragment {
             // Do nothing
         }
         super.onDestroy();
-    }
-
-    /**************************************************************************
-     * Functions to process intent broadcasts from other classes
-     **************************************************************************/
-
-    /**
-     * Process the incoming intent broadcast.
-     * @param intent The intent which was received by the activity.
-     */
-    private void processIntent(Intent intent) {
-        Log.d(TAG, ".processIntent() entered");
-
-        String data = intent.getStringExtra(Constants.INTENT_DATA);
-        assert data != null;
-        if (data.equals(Constants.COLOR_EVENT)) {
-            Log.d(TAG, "Updating background color");
-        }
     }
 }

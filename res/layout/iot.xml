@@ -36,7 +36,7 @@
                 style="@style/MyActionBarTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/deviceIDSettingIoT"
+                android:text="@string/device_id_iot"
                 android:id="@+id/deviceIDSettingIoT"
                 />
         <View android:layout_width="0dp"
@@ -46,7 +46,7 @@
                 style="@style/MyActionBarTitleText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/deviceIDValueIoT"
+                android:text="@string/device_id_iot_value"
                 android:id="@+id/deviceIDIoT"
                 />
     </LinearLayout>
@@ -60,7 +60,7 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accelInfo"
+                android:text="@string/accel_info"
                 android:id="@+id/accelInfo"
                 />
         <TextView
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accelX"
+                android:text="@string/accel_x"
                 android:id="@+id/accelX"
                 />
         <TextView
@@ -76,7 +76,7 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accelY"
+                android:text="@string/accel_y"
                 android:id="@+id/accelY"
                 />
         <TextView
@@ -84,7 +84,7 @@
                 android:gravity="center"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accelZ"
+                android:text="@string/accel_z"
                 android:id="@+id/accelZ"
                 />
     </LinearLayout>
@@ -100,7 +100,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/messagesPublished"
+                android:text="@string/messages_published"
                 android:id="@+id/messagesPublishedView"
                 />
         <TextView
@@ -110,7 +110,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
-                android:text="@string/messagesReceived"
+                android:text="@string/messages_received"
                 android:id="@+id/messagesReceivedView"
                 />
         <Button
@@ -119,6 +119,6 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:id="@+id/sendText"
-                android:text="@string/sendText"/>
+                android:text="@string/send_text"/>
     </LinearLayout>
 </LinearLayout>

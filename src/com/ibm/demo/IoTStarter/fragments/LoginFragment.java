@@ -171,10 +171,23 @@ public class LoginFragment extends IoTStarterFragment {
      * @return True if properties are set, false otherwise.
      */
     private boolean checkCanConnect() {
-        if (app.getOrganization() == null || app.getOrganization().equals("") ||
-                app.getDeviceId() == null || app.getDeviceId().equals("") ||
-                app.getAuthToken() == null || app.getAuthToken().equals("")) {
-            return false;
+        if (app.getOrganization().equals(Constants.QUICKSTART)) {
+            app.setConnectionType(Constants.ConnectionType.QUICKSTART);
+            if (app.getDeviceId() == null || app.getDeviceId().equals("")) {
+                return false;
+            }
+        } else if (app.getOrganization().equals(Constants.M2M)) {
+            app.setConnectionType(Constants.ConnectionType.M2M);
+            if (app.getDeviceId() == null || app.getDeviceId().equals("")) {
+                return false;
+            }
+        } else {
+            app.setConnectionType(Constants.ConnectionType.IOTF);
+            if (app.getOrganization() == null || app.getOrganization().equals("") ||
+                    app.getDeviceId() == null || app.getDeviceId().equals("") ||
+                    app.getAuthToken() == null || app.getAuthToken().equals("")) {
+                return false;
+            }
         }
         return true;
     }
@@ -184,9 +197,9 @@ public class LoginFragment extends IoTStarterFragment {
      */
     private void displaySetPropertiesDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Unable to connect")
-                .setMessage("Organization ID, Device ID and Auth Token must be set in order to connect.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setTitle(getResources().getString(R.string.connect_props_title))
+                .setMessage(getResources().getString(R.string.connect_props_text))
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // Do nothing.
                     }
@@ -260,9 +273,9 @@ public class LoginFragment extends IoTStarterFragment {
         } else if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
             new AlertDialog.Builder(getActivity())
-                    .setTitle("Received Alert")
+                    .setTitle(getResources().getString(R.string.alert_dialog_title))
                     .setMessage(message)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     }).show();
@@ -277,7 +290,7 @@ public class LoginFragment extends IoTStarterFragment {
         Log.d(TAG, ".processConnectIntent() entered");
         Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
         activateButton.setEnabled(true);
-        String connectedString = this.getString(R.string.isConnected);
+        String connectedString = this.getString(R.string.is_connected);
         connectedString = connectedString.replace("No", "Yes");
         ((TextView) getActivity().findViewById(R.id.isConnected)).setText(connectedString);
         activateButton.setText(getResources().getString(R.string.deactivate_button));
@@ -297,7 +310,7 @@ public class LoginFragment extends IoTStarterFragment {
         Log.d(TAG, ".processDisconnectIntent() entered");
         Button activateButton = (Button) getActivity().findViewById(R.id.activateButton);
         activateButton.setEnabled(true);
-        ((TextView) getActivity().findViewById(R.id.isConnected)).setText(this.getString(R.string.isConnected));
+        ((TextView) getActivity().findViewById(R.id.isConnected)).setText(this.getString(R.string.is_connected));
         activateButton.setText(getResources().getString(R.string.activate_button));
         if (app.getDeviceSensor() != null && app.isAccelEnabled()) {
             LocationUtils locUtils = LocationUtils.getInstance(context);

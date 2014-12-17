@@ -35,16 +35,12 @@ public class ActionListener implements IMqttActionListener {
     private Context context;
     private Constants.ActionStateStatus action;
     private IMqttToken token;
-    private TopicFactory topicFactory;
-    private MessageFactory messageFactory;
     private IoTStarterApplication app;
 
     public ActionListener(Context context, Constants.ActionStateStatus action) {
         this.context = context;
         this.action = action;
         app = (IoTStarterApplication) context.getApplicationContext();
-        topicFactory = TopicFactory.getInstance(context);
-        messageFactory = MessageFactory.getInstance(context);
     }
 
     /**
@@ -117,7 +113,7 @@ public class ActionListener implements IMqttActionListener {
 
         if (app.getConnectionType() != Constants.ConnectionType.QUICKSTART) {
             MqttHandler mqttHandler = MqttHandler.getInstance(context);
-            mqttHandler.subscribe(topicFactory.getCommandTopic("+"), 0);
+            mqttHandler.subscribe(TopicFactory.getCommandTopic("+"), 0);
         }
 
         String runningActivity = app.getCurrentRunningActivity();

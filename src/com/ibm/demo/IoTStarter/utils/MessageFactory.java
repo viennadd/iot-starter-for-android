@@ -15,32 +15,12 @@
  *******************************************************************************/
 package com.ibm.demo.IoTStarter.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import com.ibm.demo.IoTStarter.IoTStarterApplication;
-
 /**
  * Build messages to be published by the application.
  * This class is currently unused.
  */
 public class MessageFactory {
-
     private final static String TAG = MessageFactory.class.getName();
-    private static MessageFactory instance;
-    private Context context;
-    private IoTStarterApplication app;
-
-    private MessageFactory(Context context) {
-        this.context = context;
-        app = (IoTStarterApplication) context.getApplicationContext();
-    }
-
-    public static MessageFactory getInstance(Context context) {
-        if (instance == null) {
-            instance = new MessageFactory(context);
-        }
-        return instance;
-    }
 
     /**
      * Construct a JSON formatted string accel event message

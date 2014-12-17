@@ -161,10 +161,10 @@ public class ProfilesActivity extends Activity {
 
         final EditText input = new EditText(context);
         new AlertDialog.Builder(this)
-                .setTitle("Save Profile")
-                .setMessage("Enter a name for the profile.")
+                .setTitle(getResources().getString(R.string.save_dialog_title))
+                .setMessage(getResources().getString(R.string.save_dialog_text))
                 .setView(input)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.save_dialog_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         Editable value = input.getText();
                         IoTProfile profile = new IoTProfile(value.toString(), app.getOrganization(), app.getDeviceId(), app.getAuthToken());
@@ -173,14 +173,14 @@ public class ProfilesActivity extends Activity {
                         if (app.getProfileNames().contains(profile.getProfileName())) {
                             final IoTProfile newProfile = profile;
                             new AlertDialog.Builder(ProfilesActivity.this)
-                                    .setTitle("Profile Name Exists")
-                                    .setMessage("The profile name you have entered already exists. Overwrite?")
-                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int whichButton) {
-                                            app.overwriteProfile(newProfile);
-                                            listAdapter.notifyDataSetInvalidated();
-                                        }
-                                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    .setTitle(getResources().getString(R.string.profile_exists_title))
+                                    .setMessage(getResources().getString(R.string.profile_exists_text))
+                                            .setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int whichButton) {
+                                                    app.overwriteProfile(newProfile);
+                                                    listAdapter.notifyDataSetInvalidated();
+                                                }
+                                            }).setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     // Do nothing
                                 }
@@ -189,6 +189,10 @@ public class ProfilesActivity extends Activity {
                             app.saveProfile(profile);
                             listAdapter.notifyDataSetInvalidated();
                         }
+                    }
+                }).setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing
                     }
                 }).show();
     }
@@ -207,9 +211,9 @@ public class ProfilesActivity extends Activity {
         if (data.equals(Constants.ALERT_EVENT)) {
             String message = intent.getStringExtra(Constants.INTENT_DATA_MESSAGE);
             new AlertDialog.Builder(this)
-                    .setTitle("Received Alert")
+                    .setTitle(getResources().getString(R.string.alert_dialog_title))
                     .setMessage(message)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     }).show();

@@ -73,7 +73,6 @@ public class Constants {
     // Fragment intents
     public final static String INTENT_LOGIN = "INTENT_LOGIN";
     public final static String INTENT_IOT = "INTENT_IOT";
-    public final static String INTENT_DRAW = "INTENT_DRAW";
     public final static String INTENT_LOG = "INTENT_LOG";
     public final static String INTENT_PROFILES = "INTENT_PROFILES";
 

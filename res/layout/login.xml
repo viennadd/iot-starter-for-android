@@ -124,7 +124,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:textAlignment="center"
-                android:text="@string/isConnected"
+                android:text="@string/is_connected"
                 android:id="@+id/isConnected"
                 />
         <View
