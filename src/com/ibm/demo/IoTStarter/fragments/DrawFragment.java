@@ -25,14 +25,14 @@ import com.ibm.demo.IoTStarter.R;
 import com.ibm.demo.IoTStarter.views.DrawingView;
 
 /**
- * Created by Michael on 12/15/2014.
+ * DrawFragment contains the DrawingView for publishing touchmove messages.
  */
 public class DrawFragment extends IoTStarterFragment {
     private final static String TAG = DrawFragment.class.getName();
     private DrawingView drawingView;
 
     /**************************************************************************
-     * Activity functions for establishing the activity
+     * Fragment functions for establishing the fragment
      **************************************************************************/
 
     @Override
@@ -47,7 +47,7 @@ public class DrawFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is resumed.
+     * Called when the fragment is resumed.
      */
     @Override
     public void onResume() {
@@ -73,7 +73,7 @@ public class DrawFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is destroyed.
+     * Called when the fragment is destroyed.
      */
     @Override
     public void onDestroy() {

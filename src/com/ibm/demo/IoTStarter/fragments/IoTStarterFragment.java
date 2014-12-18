@@ -31,7 +31,7 @@ import com.ibm.demo.IoTStarter.activities.MainActivity;
 import com.ibm.demo.IoTStarter.activities.ProfilesActivity;
 
 /**
- * This class provides common properties and functions for Activity subclasses used in the application.
+ * This class provides common properties and functions for fragment subclasses used in the application.
  */
 public class IoTStarterFragment extends Fragment {
     protected final static String TAG = IoTStarterFragment.class.getName();
@@ -47,7 +47,7 @@ public class IoTStarterFragment extends Fragment {
     }
 
     /**
-     * Update strings in the activity based on IoTStarterApplication values.
+     * Update strings in the fragment based on IoTStarterApplication values.
      */
     protected void updateViewStrings() {
         Log.d(TAG, ".updateViewStrings() entered");
@@ -60,7 +60,7 @@ public class IoTStarterFragment extends Fragment {
      **************************************************************************/
 
     /**
-     * Switch to the IoT activity.
+     * Switch to the IoT fragment.
      */
     protected void openIoT() {
         Log.d(TAG, ".openIoT() entered");

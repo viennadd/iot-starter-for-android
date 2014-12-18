@@ -30,8 +30,7 @@ import com.ibm.demo.IoTStarter.activities.ProfilesActivity;
 import com.ibm.demo.IoTStarter.utils.Constants;
 
 /**
- * The Log activity displays text command messages that have been received by the application.
- * NOTE: This class is an alternative to LogExpActivity and is not currently being used.
+ * The Log fragment displays text command messages that have been received by the application.
  */
 public class LogFragment extends ListFragment {
     private final static String TAG = LogFragment.class.getName();
@@ -59,7 +58,7 @@ public class LogFragment extends ListFragment {
     }
 
     /**
-     * Called when the activity is resumed.
+     * Called when the fragment is resumed.
      */
     @Override
     public void onResume() {
@@ -100,7 +99,7 @@ public class LogFragment extends ListFragment {
     }
 
     /**
-     * Called when the activity is destroyed.
+     * Called when the fragment is destroyed.
      */
     @Override
     public void onDestroy() {

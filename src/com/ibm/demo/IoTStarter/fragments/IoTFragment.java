@@ -35,15 +35,15 @@ import com.ibm.demo.IoTStarter.utils.MqttHandler;
 import com.ibm.demo.IoTStarter.utils.TopicFactory;
 
 /**
- * The IoT Activity is the main activity of the application that will be displayed while the device is connected
- * to IoT. From this activity, users can send touchmove and text event messages. Users can also see the number
+ * The IoT Fragment is the main fragment of the application that will be displayed while the device is connected
+ * to IoT. From this fragment, users can send text event messages. Users can also see the number
  * of messages the device has published and received while connected.
  */
 public class IoTFragment extends IoTStarterFragment {
     private final static String TAG = IoTFragment.class.getName();
 
     /**************************************************************************
-     * Activity functions for establishing the activity
+     * Fragment functions for establishing the fragment
      **************************************************************************/
 
     @Override
@@ -52,7 +52,7 @@ public class IoTFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is resumed.
+     * Called when the fragment is resumed.
      */
     @Override
     public void onResume() {
@@ -82,7 +82,7 @@ public class IoTFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is destroyed.
+     * Called when the fragment is destroyed.
      */
     @Override
     public void onDestroy() {
@@ -117,7 +117,7 @@ public class IoTFragment extends IoTStarterFragment {
     }
 
     /**
-     * Update strings in the activity based on IoTStarterApplication values.
+     * Update strings in the fragment based on IoTStarterApplication values.
      */
     @Override
     protected void updateViewStrings() {
@@ -184,7 +184,7 @@ public class IoTFragment extends IoTStarterFragment {
 
     /**
      * Process the incoming intent broadcast.
-     * @param intent The intent which was received by the activity.
+     * @param intent The intent which was received by the fragment.
      */
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");

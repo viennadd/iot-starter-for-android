@@ -35,14 +35,14 @@ import com.ibm.demo.IoTStarter.utils.LocationUtils;
 import com.ibm.demo.IoTStarter.utils.MqttHandler;
 
 /**
- * The login activity of the IoTStarter application. Provides functionality for
+ * The login fragment of the IoTStarter application. Provides functionality for
  * connecting to IoT. Also displays device information.
  */
 public class LoginFragment extends IoTStarterFragment {
     private final static String TAG = LoginFragment.class.getName();
 
     /**************************************************************************
-     * Activity functions for establishing the activity
+     * Fragment functions for establishing the fragment
      **************************************************************************/
 
     @Override
@@ -51,7 +51,7 @@ public class LoginFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is resumed.
+     * Called when the fragment is resumed.
      */
     @Override
     public void onResume() {
@@ -81,7 +81,7 @@ public class LoginFragment extends IoTStarterFragment {
     }
 
     /**
-     * Called when the activity is destroyed.
+     * Called when the fragment is destroyed.
      */
     @Override
     public void onDestroy() {
@@ -110,7 +110,7 @@ public class LoginFragment extends IoTStarterFragment {
     }
 
     /**
-     * Update strings in the activity based on IoTStarterApplication values.
+     * Update strings in the fragment based on IoTStarterApplication values.
      */
     @Override
     protected void updateViewStrings() {
@@ -255,7 +255,7 @@ public class LoginFragment extends IoTStarterFragment {
     /**
      * Process the incoming intent broadcast.
      *
-     * @param intent The intent which was received by the activity.
+     * @param intent The intent which was received by the fragment.
      */
     private void processIntent(Intent intent) {
         Log.d(TAG, ".processIntent() entered");
