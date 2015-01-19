@@ -2,15 +2,14 @@
 IoT Starter is a demo application for interacting with the IBM Internet of Things (IoT) Foundation.
 The application turns your mobile device into a sensor that publishes and receives data to and from the cloud using the MQTT protocol.
 
+For the iOS version, refer to [IoT Starter for iOS](https://github.com/ibm-messaging/iot-starter-for-ios)
+
 ##Short Description
 IoT Foundation is a cloud-hosted service to simplify managing all of your IoT devices.
 It provides functionality for creating recipes which determine how devices communicate with each other.
-This application demonstrates using an Android device as one of those IoT devices, and provides a variety of events and
-commands that it can publish or receive data to and from.
+This application demonstrates using an Android device as one of those IoT devices, and provides a variety of events and commands that it can publish or receive data to and from.
 
-IoT events and commands are user defined values used to differentiate the data that you publish or receive. For example,
-if you have a device that is publishing GPS coordinates, you may choose to publish it as a 'GPS' event. Or, if you
-want to send a reboot command to a device, you may choose to publish it as a 'system' or 'reboot' command.
+IoT events and commands are user defined values used to differentiate the data that you publish or receive. For example, if you have a device that is publishing GPS coordinates, you may choose to publish it as a 'GPS' event. Or, if you want to send a reboot command to a device, you may choose to publish it as a 'system' or 'reboot' command.
 
 The application can publish data to the following IoT event topics:
 - Accelerometer (accel event)
@@ -26,13 +25,11 @@ The application can receive data on the following IoT command topics:
 For more information on IoT Foundation, refer to https://internetofthings.ibmcloud.com/#/
 
 ##How it works
-A device that is registered with IoT Foundation may publish event data or consume command data using the MQTT protocol.
+A device that is registered with IoT Foundation may publish and subscribe to data that is presented as either an event or command using the MQTT protocol.
 The Eclipse Paho MQTT Android Service is used to publish and subscribe to IoT Foundation. This can be downloaded from
 [Eclipse Paho MQTT Android Service](http://www.eclipse.org/paho/clients/android/).
 
-MQTT is a lightweight messaging protocol that supports publish/subscribe messaging. With MQTT, an application publishes
-messages to a topic. These messages may then be received by another application that is subscribed to that topic.
-This allows for a detached messaging network where the subscribers and publishers do not need to be aware of each other.
+MQTT is a lightweight messaging protocol that supports publish/subscribe messaging. With MQTT, an application publishes messages to a topic. These messages may then be received by another application that is subscribed to that topic. This allows for a detached messaging network where the subscribers and publishers do not need to be aware of each other.
 The topics used by this application can be seen in the table below:
 
 ##Topics
@@ -44,24 +41,21 @@ The topics used by this application can be seen in the table below:
 For more information on the MQTT protocol, see http://mqtt.org/
 
 ##Try it
-In order to try the application, you must have an IoT Foundation organization. This can be done by signing up for an IBM
-Bluemix trial and creating an instance of the Internet of Things service. This will create an an IoT organization
-where you can register devices.
+In order to try the application, you must have an IoT Foundation organization. This can be done by signing up for an IBM Bluemix trial and creating an instance of the Internet of Things service. This will create an an IoT organization
+where you can register devices. Next, you must register your device with your organization. More detailed instructions can be found at [IBM Internet of Things Foundation](https://internetofthings.ibmcloud.com/#/).
 
-On launching the application for the first time, you will be prompted to enter your credentials to connect your device
-to the IoT Foundation. The required information to connect your device includes:
+On launching the application for the first time, you will need to enter your credentials to connect your device to the IoT Foundation. The required information to connect your device includes:
 
 - Your Organization ID, e.g. ab1cd
 - Your Device ID, e.g. the MAC Address of your device. This should be the same ID as the device that you registered in
 your IoT Foundation organization.
 - Your device authorization token. This is returned when registering your device with the IoT Foundation.
 
-Once you have entered the necessary credentials, you may activate your device as a sensor.
-Pressing the 'Activate Sensor' button will connect the device to the IoT Foundation and allow it to begin publishing and receiving data.
+Once you have entered the necessary credentials, you may activate your device as a sensor. Pressing the 'Activate Sensor' button will connect the device to the IoT Foundation and allow it to begin publishing and receiving data.
 
 ##Prerequisites
 Required:
-- An IBM Bluemix account. A 30 day trial account is free. [https://ace.ng.bluemix.net/]
+- An [IBM Bluemix](https://ace.ng.bluemix.net/) account. A 30 day trial account is free.
 - An Internet of Things service registered in Bluemix.
 - An Android SDK installation
 
@@ -77,6 +71,7 @@ to the application. For examples, refer to the [IoT Starter demo](http://m2m.dem
 
 ##Resources
 - [IoT Starter](http://m2m.demos.ibm.com/iotstarter.html)
+- [IoT Starter for iOS](https://github.com/ibm-messaging/iot-starter-for-ios)
 - [IBM Internet of Things Foundation](https://internetofthings.ibmcloud.com/#/)
 - [IBM Bluemix](https://ace.ng.bluemix.net)
 - [IoT Recipes](https://developer.ibm.com/iot/)
